@@ -33,12 +33,17 @@ ylist_search("コナラ")
 ```
 
 The first function call that needs YList data downloads the public tab-delimited
-file into the user's local R cache. To refresh the cached file:
+file into the user's local R cache. After that, `academic_name()`,
+`ylist_search()`, and `ylist_load()` read from the cached local file and do not
+query the YList server for every lookup. This keeps repeated use gentle on the
+YList server. To refresh the cached file intentionally:
 
 ```r
 ylist_download(overwrite = TRUE)
 ylist_load(refresh = TRUE)
 ```
+
+`gbif_match()` is separate: it calls the GBIF API when you run it.
 
 ## Guides
 
