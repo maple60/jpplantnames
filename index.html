@@ -40,6 +40,8 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-guides">
 <li><a class="dropdown-item" href="articles/get-started.html">English: Usage Guide</a></li>
     <li><a class="dropdown-item" href="articles/ja-get-started.html">日本語: 使い方ガイド</a></li>
+    <li><a class="dropdown-item" href="articles/maintenance.html">English: Maintenance Guide</a></li>
+    <li><a class="dropdown-item" href="articles/ja-maintenance.html">日本語: メンテナンスガイド</a></li>
   </ul>
 </li>
       </ul>
@@ -59,8 +61,8 @@
 <div class="page-header"><h1 id="ylistjp">ylistjp<a class="anchor" aria-label="anchor" href="#ylistjp"></a>
 </h1></div>
 <p><code>ylistjp</code> is an unofficial R package for looking up scientific plant names from Japanese plant names using the public tab-delimited data file from <a href="http://www.ylist.info/" class="external-link">YList</a>, the “植物和名-学名インデックス”.</p>
-<p><code>ylistjp</code> は、<a href="http://www.ylist.info/" class="external-link">YList</a>（植物和名-学名インデックス）の 公開タブ区切りデータを利用して、和名から学名を調べるための非公式 R パッケージです。</p>
 <p>Documentation site: <a href="https://maple60.github.io/ylistjp/">https://maple60.github.io/ylistjp/</a></p>
+<p>日本語で読みたい場合は <a href="https://maple60.github.io/ylistjp/README.ja.html">日本語 README</a> または <a href="https://maple60.github.io/ylistjp/articles/ja-get-started.html">日本語ガイド</a> を参照してください。</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -87,28 +89,21 @@
 <span><span class="fu"><a href="reference/ylist_load.html">ylist_load</a></span><span class="op">(</span>refresh <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="日本語での概要">日本語での概要<a class="anchor" aria-label="anchor" href="#%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%A7%E3%81%AE%E6%A6%82%E8%A6%81"></a>
+<h2 id="guides">Guides<a class="anchor" aria-label="anchor" href="#guides"></a>
 </h2>
-<p>基本的な使い方は次の通りです。</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/maple60/ylistjp" class="external-link">ylistjp</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># 和名から学名を取得</span></span>
-<span><span class="fu"><a href="reference/academic_name.html">academic_name</a></span><span class="op">(</span><span class="st">"コナラ"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># 命名者付きの学名を取得</span></span>
-<span><span class="fu"><a href="reference/academic_name.html">academic_name</a></span><span class="op">(</span><span class="st">"コナラ"</span>, with_author <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># 候補を一覧で確認</span></span>
-<span><span class="fu"><a href="reference/ylist_search.html">ylist_search</a></span><span class="op">(</span><span class="st">"コナラ"</span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="reference/academic_name.html">academic_name()</a></code> は YList の <code>和名</code> 列を完全一致で検索し、<code>ステータス</code> が <code>標準</code> の行を優先して学名を返します。部分一致や別名を含む候補確認には <code><a href="reference/ylist_search.html">ylist_search()</a></code> を使います。</p>
-<p>詳しい使い方はドキュメントサイトの <a href="https://maple60.github.io/ylistjp/articles/ja-get-started.html">日本語ガイド</a> を参照してください。</p>
+<ul>
+<li><a href="https://maple60.github.io/ylistjp/articles/get-started.html">Usage guide</a></li>
+<li><a href="https://maple60.github.io/ylistjp/articles/ja-get-started.html">日本語: 使い方ガイド</a></li>
+<li><a href="https://maple60.github.io/ylistjp/articles/maintenance.html">Maintenance guide</a></li>
+<li><a href="https://maple60.github.io/ylistjp/articles/ja-maintenance.html">日本語: メンテナンスガイド</a></li>
+<li><a href="https://maple60.github.io/ylistjp/reference/index.html">Function reference</a></li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="international-name-checks">International Name Checks<a class="anchor" aria-label="anchor" href="#international-name-checks"></a>
 </h2>
 <p><code><a href="reference/gbif_match.html">gbif_match()</a></code> is a small optional helper around the GBIF species match API. It is intended for checking the scientific name returned from YList against an international biodiversity data source.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/gbif_match.html">gbif_match</a></span><span class="op">(</span><span class="st">"Quercus serrata"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">

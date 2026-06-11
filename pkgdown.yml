@@ -4,7 +4,9 @@ pkgdown_sha: ~
 articles:
   get-started: get-started.html
   ja-get-started: ja-get-started.html
-last_built: 2026-06-11T03:49Z
+  ja-maintenance: ja-maintenance.html
+  maintenance: maintenance.html
+last_built: 2026-06-11T05:55Z
 urls:
   reference: https://maple60.github.io/ylistjp/reference
   article: https://maple60.github.io/ylistjp/articles

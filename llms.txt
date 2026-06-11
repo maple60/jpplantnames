@@ -4,12 +4,12 @@
 names from Japanese plant names using the public tab-delimited data file
 from [YList](http://www.ylist.info/), the “植物和名-学名インデックス”.
 
-`ylistjp`
-は、[YList](http://www.ylist.info/)（植物和名-学名インデックス）の
-公開タブ区切りデータを利用して、和名から学名を調べるための非公式 R
-パッケージです。
-
 Documentation site: <https://maple60.github.io/ylistjp/>
+
+日本語で読みたい場合は [日本語
+README](https://maple60.github.io/ylistjp/README.ja.html) または
+[日本語ガイド](https://maple60.github.io/ylistjp/articles/ja-get-started.html)
+を参照してください。
 
 ## Installation
 
@@ -44,33 +44,18 @@ ylist_download(overwrite = TRUE)
 ylist_load(refresh = TRUE)
 ```
 
-## 日本語での概要
+## Guides
 
-基本的な使い方は次の通りです。
-
-``` r
-
-library(ylistjp)
-
-# 和名から学名を取得
-academic_name("コナラ")
-
-# 命名者付きの学名を取得
-academic_name("コナラ", with_author = TRUE)
-
-# 候補を一覧で確認
-ylist_search("コナラ")
-```
-
-[`academic_name()`](https://maple60.github.io/ylistjp/reference/academic_name.md)
-は YList の `和名` 列を完全一致で検索し、`ステータス` が `標準`
-の行を優先して学名を返します。部分一致や別名を含む候補確認には
-[`ylist_search()`](https://maple60.github.io/ylistjp/reference/ylist_search.md)
-を使います。
-
-詳しい使い方はドキュメントサイトの
-[日本語ガイド](https://maple60.github.io/ylistjp/articles/ja-get-started.html)
-を参照してください。
+- [Usage
+  guide](https://maple60.github.io/ylistjp/articles/get-started.html)
+- [日本語:
+  使い方ガイド](https://maple60.github.io/ylistjp/articles/ja-get-started.html)
+- [Maintenance
+  guide](https://maple60.github.io/ylistjp/articles/maintenance.html)
+- [日本語:
+  メンテナンスガイド](https://maple60.github.io/ylistjp/articles/ja-maintenance.html)
+- [Function
+  reference](https://maple60.github.io/ylistjp/reference/index.html)
 
 ## International Name Checks
 
@@ -131,9 +116,15 @@ Optional helper for checking scientific names against GBIF.
 
 # Articles
 
-### Guides
+### User guides
 
 - [Using
   ylistjp](https://maple60.github.io/ylistjp/articles/get-started.md):
 - [ylistjp
   の使い方](https://maple60.github.io/ylistjp/articles/ja-get-started.md):
+
+### Developer guides
+
+- [Maintenance
+  guide](https://maple60.github.io/ylistjp/articles/maintenance.md):
+- [メンテナンスガイド](https://maple60.github.io/ylistjp/articles/ja-maintenance.md):
