@@ -1,0 +1,97 @@
+# ylistjp
+
+`ylistjp` is an unofficial R package for looking up scientific plant
+names from Japanese plant names using the public tab-delimited data file
+from [YList](http://www.ylist.info/), the “植物和名-学名インデックス”.
+
+`ylistjp`
+は、[YList](http://www.ylist.info/)（植物和名-学名インデックス）の
+公開タブ区切りデータを利用して、和名から学名を調べるための非公式 R
+パッケージです。
+
+Documentation site: <https://maple60.github.io/ylistjp/>
+
+## Installation
+
+``` r
+
+# install.packages("pak")
+pak::pak("maple60/ylistjp")
+```
+
+## Quick Start
+
+``` r
+
+library(ylistjp)
+
+academic_name("コナラ")
+#> [1] "Quercus serrata"
+
+academic_name("コナラ", with_author = TRUE)
+#> [1] "Quercus serrata Murray"
+
+ylist_search("コナラ")
+```
+
+The first function call that needs YList data downloads the public
+tab-delimited file into the user’s local R cache. To refresh the cached
+file:
+
+``` r
+
+ylist_download(overwrite = TRUE)
+ylist_load(refresh = TRUE)
+```
+
+## 日本語での概要
+
+基本的な使い方は次の通りです。
+
+``` r
+
+library(ylistjp)
+
+# 和名から学名を取得
+academic_name("コナラ")
+
+# 命名者付きの学名を取得
+academic_name("コナラ", with_author = TRUE)
+
+# 候補を一覧で確認
+ylist_search("コナラ")
+```
+
+[`academic_name()`](https://maple60.github.io/ylistjp/reference/academic_name.md)
+は YList の `和名` 列を完全一致で検索し、`ステータス` が `標準`
+の行を優先して学名を返します。部分一致や別名を含む候補確認には
+[`ylist_search()`](https://maple60.github.io/ylistjp/reference/ylist_search.md)
+を使います。
+
+詳しい使い方はドキュメントサイトの
+[日本語ガイド](https://maple60.github.io/ylistjp/articles/ja-get-started.html)
+を参照してください。
+
+## International Name Checks
+
+[`gbif_match()`](https://maple60.github.io/ylistjp/reference/gbif_match.md)
+is a small optional helper around the GBIF species match API. It is
+intended for checking the scientific name returned from YList against an
+international biodiversity data source.
+
+``` r
+
+gbif_match("Quercus serrata")
+```
+
+## Data Source and Citation
+
+This package is not affiliated with or endorsed by YList.
+
+When using YList data, cite the original source:
+
+> 米倉浩司・梶田忠 (2003-)「BG Plants
+> 和名－学名インデックス」（YList），<http://ylist.info>
+
+The package code is MIT licensed. YList data is not included in the
+package and is not covered by this package’s license.

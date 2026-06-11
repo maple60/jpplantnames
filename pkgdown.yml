@@ -1,0 +1,10 @@
+pandoc: 3.8.3
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  get-started: get-started.html
+  ja-get-started: ja-get-started.html
+last_built: 2026-06-11T03:49Z
+urls:
+  reference: https://maple60.github.io/ylistjp/reference
+  article: https://maple60.github.io/ylistjp/articles
