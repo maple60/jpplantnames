@@ -17,7 +17,7 @@ check_ylist_columns <- function(data, required = required_ylist_columns) {
   missing <- setdiff(required, names(data))
   if (length(missing) > 0) {
     stop(
-      "YList data is missing required column(s): ",
+      "Lookup data is missing required column(s): ",
       paste(missing, collapse = ", "),
       call. = FALSE
     )
@@ -28,8 +28,8 @@ check_ylist_columns <- function(data, required = required_ylist_columns) {
 
 #' Look up scientific names from Japanese plant names
 #'
-#' Exact-matches Japanese names in YList and returns the standard scientific
-#' name.
+#' Exact-matches Japanese names in the cached checklist data and returns the
+#' scientific name.
 #'
 #' @param name Character vector of Japanese plant names.
 #' @param with_author Logical. If `TRUE`, include the name author.
@@ -56,6 +56,7 @@ academic_name <- function(name, with_author = FALSE) {
     data,
     required = c(
       col_japanese_name,
+      col_alias_name,
       col_scientific_name,
       col_scientific_name_author,
       col_status
@@ -79,8 +80,13 @@ lookup_one_academic_name <- function(name, data, column) {
     return(NA_character_)
   }
 
+  japanese_match <- data[[col_japanese_name]] == name
+  alias_match <- data[[col_alias_name]] == name
+  japanese_match[is.na(japanese_match)] <- FALSE
+  alias_match[is.na(alias_match)] <- FALSE
+
   hits <- data[
-    data[[col_japanese_name]] == name & data[[col_status]] == status_standard,
+    (japanese_match | alias_match) & data[[col_status]] == status_standard,
     ,
     drop = FALSE
   ]
@@ -89,9 +95,9 @@ lookup_one_academic_name <- function(name, data, column) {
     return(NA_character_)
   }
 
-  if (nrow(hits) > 1) {
+  if (nrow(hits) > 1 && !is_wamei_checklist_data(hits)) {
     stop(
-      "Multiple standard YList matches found for `",
+      "Multiple standard lookup matches found for `",
       name,
       "`. Use ylist_search(\"",
       name,
@@ -108,17 +114,17 @@ lookup_one_academic_name <- function(name, data, column) {
   value
 }
 
-#' Search YList rows
+#' Search cached checklist rows
 #'
-#' Search YList rows by Japanese name, scientific name, alias, or all of those
-#' fields.
+#' Search cached checklist rows by Japanese name, scientific name, alias, or all
+#' of those fields.
 #'
 #' @param query Character scalar to search for.
 #' @param field Field to search: `japanese`, `scientific`, `alias`, or `all`.
 #' @param exact Logical. If `TRUE`, use exact matching; otherwise use partial
 #'   fixed-string matching.
 #'
-#' @return A data frame of matching YList rows.
+#' @return A data frame of matching lookup rows.
 #' @export
 ylist_search <- function(query, field = c("japanese", "scientific", "alias", "all"), exact = FALSE) {
   if (!is.character(query) || length(query) != 1 || is.na(query)) {
@@ -164,11 +170,11 @@ match_ylist_column <- function(values, query, exact) {
   grepl(tolower(query), tolower(values), fixed = TRUE)
 }
 
-#' Suggest YList rows for an approximate Japanese plant name
+#' Suggest lookup rows for an approximate Japanese plant name
 #'
-#' `ylist_suggest()` is a small interactive helper for finding likely YList
+#' `ylist_suggest()` is a small interactive helper for finding likely lookup
 #' rows before converting Japanese names to scientific names. It searches only
-#' the YList Japanese-name column and does not change or autocorrect
+#' the cached lookup Japanese-name column and does not change or autocorrect
 #' [academic_name()] results.
 #'
 #' @param query Character scalar Japanese plant name to search for.
@@ -177,7 +183,7 @@ match_ylist_column <- function(values, query, exact) {
 #'   the default is 1 for normalized queries with 3 or fewer characters and 2
 #'   for longer queries.
 #'
-#' @return A data frame containing YList rows plus `query`, `matched_value`,
+#' @return A data frame containing lookup rows plus `query`, `matched_value`,
 #'   `distance`, `score`, and `match_type`.
 #' @export
 #'
@@ -306,4 +312,8 @@ empty_ylist_suggest <- function(data) {
   result$score <- numeric()
   result$match_type <- character()
   result
+}
+
+is_wamei_checklist_data <- function(data) {
+  all(c("source_id", "source") %in% names(data))
 }

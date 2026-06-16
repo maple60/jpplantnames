@@ -3,7 +3,7 @@ test_that("ylist_download writes to and reuses the cache", {
     path <- ylist_download()
 
     expect_true(file.exists(path))
-    expect_match(path, "20210514YList_download_tab.txt", fixed = TRUE)
+    expect_match(path, "wamei_checklist_ver.1.10.xlsx", fixed = TRUE)
 
     first_mtime <- file.info(path)$mtime
     second_path <- ylist_download()
@@ -13,7 +13,7 @@ test_that("ylist_download writes to and reuses the cache", {
   })
 })
 
-test_that("ylist_load reads CP932 tab-delimited YList data", {
+test_that("ylist_load reads normalized checklist data", {
   with_fixture_cache({
     data <- ylist_load()
 
@@ -21,6 +21,8 @@ test_that("ylist_load reads CP932 tab-delimited YList data", {
     expect_true("和名" %in% names(data))
     expect_equal(data[["和名"]][[1]], "コナラ")
     expect_equal(data[["学名"]][[1]], "Quercus serrata")
+    expect_equal(data[["別名"]][[2]], "ナラ")
+    expect_equal(data[["source_id"]][[1]], "GL_05174")
   })
 })
 
@@ -32,5 +34,6 @@ test_that("ylist_load refresh redownloads cached data", {
     data <- ylist_load(refresh = TRUE)
 
     expect_equal(data[["和名"]][[1]], "コナラ")
+    expect_equal(data[["学名 withAuthor"]][[1]], "Quercus serrata Murray")
   })
 })

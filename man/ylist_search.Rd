@@ -1,6 +1,6 @@
 \name{ylist_search}
 \alias{ylist_search}
-\title{Search YList rows}
+\title{Search cached checklist rows}
 \usage{
 ylist_search(query, field = c("japanese", "scientific", "alias", "all"), exact = FALSE)
 }
@@ -13,9 +13,9 @@ ylist_search(query, field = c("japanese", "scientific", "alias", "all"), exact =
 fixed-string matching.}
 }
 \value{
-A data frame of matching YList rows.
+A data frame of matching lookup rows.
 }
 \description{
-Search YList rows by Japanese name, scientific name, alias, or all of those
-fields.
+Search cached checklist rows by Japanese name, scientific name, alias, or all
+of those fields.
 }

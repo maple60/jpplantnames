@@ -1,6 +1,6 @@
 \name{ylist_download}
 \alias{ylist_download}
-\title{Download the public YList tab-delimited data file}
+\title{Download the Japanese-name checklist data file}
 \usage{
 ylist_download(overwrite = FALSE)
 }
@@ -11,6 +11,6 @@ ylist_download(overwrite = FALSE)
 The path to the cached file, invisibly.
 }
 \description{
-Downloads the public YList tab-delimited data file into the user's R cache.
-The file is not bundled with the package.
+Downloads the Vascular Plant Japanese Name Checklist ver. 1.10 Excel file
+into the user's R cache. The file is not bundled with the package.
 }

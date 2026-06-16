@@ -15,8 +15,8 @@ A character vector with one result per input name. Missing names return
 \code{NA_character_}.
 }
 \description{
-Exact-matches Japanese names in the YList \code{和名} column and returns the
-standard scientific name where \code{ステータス == "標準"}.
+Exact-matches Japanese names in the cached checklist data and returns the
+scientific name.
 }
 \examples{
 \dontrun{

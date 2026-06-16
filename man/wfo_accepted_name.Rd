@@ -40,14 +40,14 @@ A data frame with one row per input and a clear \code{match_status}.
 }
 \description{
 Summarise WFO Plant List suggestions into one accepted-name interpretation per
-input scientific name. YList functions such as
+input scientific name. Lookup functions such as
 \code{\link[=academic_name]{academic_name()}} handle Japanese name to scientific
 name lookup; this helper handles scientific name to WFO candidate, accepted
 name, WFO ID, rank, and status checks.
 }
 \details{
 WFO API access is intended for small-scale interactive checks. These functions
-do not automatically replace YList names with WFO accepted names. Accepted
+do not automatically replace checklist names with WFO accepted names. Accepted
 names are database- and release-dependent.
 }
 \examples{

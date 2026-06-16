@@ -24,10 +24,10 @@ ylist_info(
 \item{with_author}{Logical. If \code{TRUE}, print and return WFO accepted names
 with authors where available.}
 
-\item{wfo}{Logical. If \code{TRUE}, check the preferred YList scientific name
+\item{wfo}{Logical. If \code{TRUE}, check the preferred checklist scientific name
 with \code{\link[=wfo_accepted_name]{wfo_accepted_name()}}.}
 
-\item{gbif}{Logical. If \code{TRUE}, check the preferred YList scientific name
+\item{gbif}{Logical. If \code{TRUE}, check the preferred checklist scientific name
 with \code{\link[=gbif_match]{gbif_match()}}.}
 
 \item{rank}{Character scalar rank to prefer for WFO checks.}
@@ -51,21 +51,21 @@ A named list with class \code{"ylist_info"} containing:
 \itemize{
 \item \code{query}: the original input vector.
 \item \code{summary}: one summary row per input name.
-\item \code{ylist}: YList candidate rows with input metadata.
+\item \code{ylist}: checklist candidate rows with input metadata.
 \item \code{wfo}: WFO accepted-name rows, or \code{NULL}.
 \item \code{gbif}: GBIF match rows, or \code{NULL}.
 }
 }
 \description{
 \code{ylist_info()} is a convenient wrapper for users who want a compact,
-browser-like summary from a Japanese plant name. It keeps YList as the source
-of the Japanese-name lookup and only checks WFO or GBIF when those checks are
-explicitly requested.
+browser-like summary from a Japanese plant name. It keeps the cached
+Japanese-name checklist lookup separate from WFO or GBIF checks, which are
+only run when explicitly requested.
 }
 \details{
-The summary keeps the preferred YList standard match separate from optional
-WFO and GBIF checks. Alternative YList candidate rows are kept in
-\code{x$ylist}; WFO and GBIF results do not overwrite YList names.
+The summary keeps the preferred checklist match separate from optional WFO and
+GBIF checks. Alternative checklist candidate rows are kept in \code{x$ylist};
+WFO and GBIF results do not overwrite checklist names.
 }
 \examples{
 \dontrun{

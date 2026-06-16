@@ -1,8 +1,8 @@
-YLIST_PUBLIC_TAB_URL <- "http://www.ylist.info/20210514YList_download_tab.txt"
-YLIST_CACHE_FILE <- "20210514YList_download_tab.txt"
+WAMEI_CHECKLIST_URL <- "https://gbif.jp/activities/checklist/wamei_checklist_110/excel/wamei_checklist_ver.1.10.xlsx"
+YLIST_CACHE_FILE <- "wamei_checklist_ver.1.10.xlsx"
 
 ylist_source_url <- function() {
-  getOption("ylistjp.source_url", YLIST_PUBLIC_TAB_URL)
+  getOption("ylistjp.source_url", WAMEI_CHECKLIST_URL)
 }
 
 ylist_cache_dir <- function() {
@@ -22,10 +22,10 @@ is_probably_url <- function(x) {
   grepl("^[A-Za-z][A-Za-z0-9+.-]*://", x)
 }
 
-#' Download the public YList tab-delimited data file
+#' Download the Japanese-name checklist data file
 #'
-#' Downloads the public YList tab-delimited data file into the user's R cache.
-#' The file is not bundled with the package.
+#' Downloads the Vascular Plant Japanese Name Checklist ver. 1.10 Excel file
+#' into the user's R cache. The file is not bundled with the package.
 #'
 #' @param overwrite Logical. If `FALSE`, an existing cached file is reused.
 #'
@@ -50,7 +50,7 @@ ylist_download <- function(overwrite = FALSE) {
   if (!is_probably_url(source) && file.exists(source)) {
     ok <- file.copy(source, tmp, overwrite = TRUE)
     if (!ok) {
-      stop("Failed to copy local YList source file.", call. = FALSE)
+      stop("Failed to copy local checklist source file.", call. = FALSE)
     }
   } else {
     status <- utils::download.file(
@@ -60,13 +60,13 @@ ylist_download <- function(overwrite = FALSE) {
       quiet = TRUE
     )
     if (!identical(status, 0L)) {
-      stop("Failed to download YList data from ", source, call. = FALSE)
+      stop("Failed to download checklist data from ", source, call. = FALSE)
     }
   }
 
   ok <- file.copy(tmp, path, overwrite = TRUE)
   if (!ok) {
-    stop("Failed to write YList data to cache: ", path, call. = FALSE)
+    stop("Failed to write checklist data to cache: ", path, call. = FALSE)
   }
 
   invisible(path)

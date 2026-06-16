@@ -14,9 +14,9 @@ test_that("ylist_info returns a scalar summary and keeps YList candidates", {
       result$summary$scientific_name_with_author[[1]],
       "Quercus serrata Murray"
     )
-    expect_equal(result$summary$n_ylist_candidates[[1]], 2L)
+    expect_equal(result$summary$n_ylist_candidates[[1]], 4L)
     expect_equal(result$summary$match_status[[1]], "matched")
-    expect_equal(nrow(result$ylist), 2L)
+    expect_equal(nrow(result$ylist), 4L)
     expect_equal(sum(result$ylist$is_preferred), 1L)
     expect_null(result$wfo)
     expect_null(result$gbif)

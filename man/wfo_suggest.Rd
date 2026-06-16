@@ -40,7 +40,8 @@ role, and cache status.
 Query the WFO Plant List GraphQL API for candidate names. This is a small
 interactive helper for checking scientific names, such as names returned by
 \code{\link[=academic_name]{academic_name()}} or
-\code{\link[=ylist_search]{ylist_search()}}. It does not change YList results.
+\code{\link[=ylist_search]{ylist_search()}}. It does not change checklist
+lookup results.
 }
 \details{
 WFO accepted names are database- and release-dependent. WFO API access is

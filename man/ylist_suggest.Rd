@@ -1,6 +1,6 @@
 \name{ylist_suggest}
 \alias{ylist_suggest}
-\title{Suggest YList rows for an approximate Japanese plant name}
+\title{Suggest lookup rows for an approximate Japanese plant name}
 \usage{
 ylist_suggest(query, n = 10, max_distance = NULL)
 }
@@ -14,13 +14,13 @@ the default is 1 for normalized queries with 3 or fewer characters and 2
 for longer queries.}
 }
 \value{
-A data frame containing YList rows plus \code{query}, \code{matched_value},
+A data frame containing lookup rows plus \code{query}, \code{matched_value},
 \code{distance}, \code{score}, and \code{match_type}.
 }
 \description{
-\code{ylist_suggest()} is a small interactive helper for finding likely YList
+\code{ylist_suggest()} is a small interactive helper for finding likely lookup
 rows before converting Japanese names to scientific names. It searches only
-the YList Japanese-name column and does not change or autocorrect
+the cached lookup Japanese-name column and does not change or autocorrect
 \code{\link[=academic_name]{academic_name()}} results.
 }
 \examples{

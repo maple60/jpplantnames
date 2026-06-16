@@ -1,16 +1,16 @@
 #' Get a high-level YList summary for Japanese plant names
 #'
 #' `ylist_info()` is a convenient wrapper for users who want a compact,
-#' browser-like summary from a Japanese plant name. It keeps YList as the
-#' source of the Japanese-name lookup and only checks WFO or GBIF when those
-#' checks are explicitly requested.
+#' browser-like summary from a Japanese plant name. It keeps the cached
+#' Japanese-name checklist lookup separate from WFO or GBIF checks, which are
+#' only run when explicitly requested.
 #'
 #' @param name Character vector of Japanese plant names.
 #' @param with_author Logical. If `TRUE`, print and return WFO accepted names
 #'   with authors where available.
-#' @param wfo Logical. If `TRUE`, check the preferred YList scientific name
+#' @param wfo Logical. If `TRUE`, check the preferred checklist scientific name
 #'   with [wfo_accepted_name()].
-#' @param gbif Logical. If `TRUE`, check the preferred YList scientific name
+#' @param gbif Logical. If `TRUE`, check the preferred checklist scientific name
 #'   with [gbif_match()].
 #' @param rank Character scalar rank to prefer for WFO checks.
 #' @param limit Integer. Maximum number of WFO suggestions to request per
@@ -22,7 +22,8 @@
 #'   `wfo = TRUE`.
 #'
 #' @return A named list with class `"ylist_info"` containing `query`,
-#'   `summary`, `ylist`, `wfo`, and `gbif`.
+#'   `summary`, `ylist`, `wfo`, and `gbif`. The `ylist` element keeps the
+#'   historical API name and contains checklist candidate rows.
 #' @export
 #'
 #' @examples
@@ -82,7 +83,10 @@ ylist_info <- function(name,
     )
 
     preferred_index <- NA_integer_
-    if (length(standard_indices) == 1L) {
+    if (
+      length(standard_indices) == 1L ||
+        (length(standard_indices) > 1L && is_wamei_checklist_data(rows))
+    ) {
       preferred_index <- standard_indices[[1]]
       preferred <- rows[preferred_index, , drop = FALSE]
 

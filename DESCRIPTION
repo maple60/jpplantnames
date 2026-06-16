@@ -1,5 +1,5 @@
 Package: ylistjp
-Title: Unofficial Access to YList Japanese Plant Name Data
+Title: Unofficial Japanese Plant Name Lookup Tools
 Version: 0.1.0
 Authors@R:
     person(
@@ -10,11 +10,12 @@ Authors@R:
     )
 Author: ylistjp contributors
 Maintainer: ylistjp contributors <noreply@example.com>
-Description: Fetches and caches the public tab-delimited YList data file and
-    provides helpers for looking up scientific plant names from Japanese names.
-    It also includes small optional helpers for checking scientific names
-    against the GBIF species match API and WFO Plant List API. This package is
-    not affiliated with or endorsed by YList.
+Description: Fetches and caches the Vascular Plant Japanese Name Checklist
+    ver. 1.10 and provides helpers for looking up scientific plant names from
+    Japanese names. It also includes small optional helpers for checking
+    scientific names against the GBIF species match API and WFO Plant List API.
+    This package is not affiliated with or endorsed by JBIF, YList, or the
+    checklist authors.
 License: MIT + file LICENSE
 URL: https://github.com/maple60/ylistjp, https://maple60.github.io/ylistjp/
 BugReports: https://github.com/maple60/ylistjp/issues
@@ -23,6 +24,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 Config/Needs/website: pkgdown
+Imports:
+    readxl
 Suggests:
     httr2,
     knitr,

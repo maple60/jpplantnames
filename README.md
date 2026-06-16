@@ -1,8 +1,8 @@
 # ylistjp
 
 `ylistjp` is an unofficial R package for looking up scientific plant names from
-Japanese plant names using the public tab-delimited data file from
-[YList](http://www.ylist.info/), the "植物和名-学名インデックス".
+Japanese plant names using the Vascular Plant Japanese Name Checklist ver. 1.10
+published by [JBIF](https://gbif.jp/activities/checklist/wamei_checklist_110/).
 
 Documentation site:
 [https://maple60.github.io/ylistjp/](https://maple60.github.io/ylistjp/)
@@ -34,11 +34,11 @@ academic_name("コナラ", with_author = TRUE)
 ylist_search("コナラ")
 ```
 
-The first function call that needs YList data downloads the public tab-delimited
-file into the user's local R cache. After that, `academic_name()`,
+The first function call that needs checklist data downloads the Excel file into
+the user's local R cache. After that, `academic_name()`,
 `ylist_search()`, and `ylist_load()` read from the cached local file and do not
-query the YList server for every lookup. This keeps repeated use gentle on the
-YList server. To refresh the cached file intentionally:
+query an external server for every lookup. To refresh the cached file
+intentionally:
 
 ```r
 ylist_download(overwrite = TRUE)
@@ -48,7 +48,7 @@ ylist_load(refresh = TRUE)
 `gbif_match()` is separate: it calls the GBIF API when you run it.
 
 `ylist_info()` is the recommended convenient entry point when you want a compact
-summary. By default it uses only cached YList data. WFO and GBIF checks are
+summary. By default it uses only cached checklist data. WFO and GBIF checks are
 optional and may depend on external database content and API availability:
 
 ```r
@@ -70,9 +70,10 @@ ylist_info("コナラ", wfo = TRUE, gbif = TRUE)
 
 ### WFO Plant List checks
 
-`academic_name()` returns the YList scientific name. `wfo_suggest()` checks WFO
-candidate names, and `wfo_accepted_name()` summarizes the best WFO
-accepted-name interpretation. These functions do not change YList results.
+`academic_name()` returns the checklist scientific name. `wfo_suggest()` checks
+WFO candidate names, and `wfo_accepted_name()` summarizes the best WFO
+accepted-name interpretation. These functions do not change checklist lookup
+results.
 WFO API use should stay small-scale; for larger workflows, keep caching enabled
 and record the WFO release or version used.
 
@@ -88,8 +89,8 @@ wfo_accepted_name(sci)
 ### GBIF checks
 
 `gbif_match()` is a small optional helper around the GBIF species match API.
-It is intended for checking the scientific name returned from YList against an
-international biodiversity data source.
+It is intended for checking the scientific name returned from the checklist
+lookup against an international biodiversity data source.
 
 ```r
 gbif_match("Quercus serrata")
@@ -97,11 +98,16 @@ gbif_match("Quercus serrata")
 
 ## Data Source and Citation
 
-This package is not affiliated with or endorsed by YList.
+This package uses the Vascular Plant Japanese Name Checklist ver. 1.10 as the
+lookup source. The checklist includes YList-derived/update data, but this
+package is not affiliated with or endorsed by JBIF, YList, or the checklist
+authors.
 
-When using YList data, cite the original source:
+When using checklist-based results, cite the checklist:
 
-> 米倉浩司・梶田忠 (2003-)「BG Plants 和名－学名インデックス」（YList），http://ylist.info
+> Yamanouchi, T., Shutoh, K., Osawa, T., Yonekura, K., Kato, S., Shiga, T.
+> 2019. A checklist of Japanese plant names
+> (https://gbif.jp/activities/checklist/wamei_checklist_110)
 
-The package code is MIT licensed. YList data is not included in the package and
-is not covered by this package's license.
+The package code is MIT licensed. Checklist data is not included in the package
+and is not covered by this package's license.
