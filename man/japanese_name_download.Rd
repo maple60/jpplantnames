@@ -1,0 +1,23 @@
+\name{japanese_name_download}
+\alias{japanese_name_download}
+\alias{ylist_download}
+\title{Download the Japanese-name checklist data file}
+\usage{
+japanese_name_download(overwrite = FALSE)
+
+ylist_download(overwrite = FALSE)
+}
+\arguments{
+\item{overwrite}{Logical. If \code{FALSE}, an existing cached file is reused.}
+}
+\value{
+The path to the cached file, invisibly.
+}
+\description{
+Downloads the Vascular Plant Japanese Name Checklist ver. 1.10 Excel file
+into the user's R cache. The file is not bundled with the package.
+}
+\details{
+\code{ylist_download()} is retained as a deprecated compatibility wrapper.
+Use \code{japanese_name_download()} for new code.
+}

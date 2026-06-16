@@ -1,0 +1,25 @@
+\name{japanese_name_load}
+\alias{japanese_name_load}
+\alias{ylist_load}
+\title{Load cached Japanese-name checklist data}
+\usage{
+japanese_name_load(refresh = FALSE)
+
+ylist_load(refresh = FALSE)
+}
+\arguments{
+\item{refresh}{Logical. If \code{TRUE}, redownload the checklist data before
+loading.}
+}
+\value{
+A data frame containing normalized checklist rows.
+}
+\description{
+Loads the cached Vascular Plant Japanese Name Checklist ver. 1.10 as a data
+frame normalized for the package lookup helpers. If the cache does not exist,
+the checklist file is downloaded first.
+}
+\details{
+\code{ylist_load()} is retained as a deprecated compatibility wrapper.
+Use \code{japanese_name_load()} for new code.
+}

@@ -2,7 +2,8 @@
 #'
 #' Query the WFO Plant List GraphQL API for candidate names. This is a small
 #' interactive helper for checking scientific names, such as names returned by
-#' [academic_name()] or [ylist_search()]. It does not change YList results.
+#' [scientific_name()] or [japanese_name_search()]. It does not change checklist lookup
+#' results.
 #'
 #' WFO accepted names are database- and release-dependent. For large-scale or
 #' reproducible workflows, use cached results and record the WFO release or use
@@ -28,7 +29,7 @@
 #' @examples
 #' \dontrun{
 #' wfo_suggest("Quercus serrata")
-#' wfo_suggest(academic_name("\u30b3\u30ca\u30e9"))
+#' wfo_suggest(scientific_name("\u30b3\u30ca\u30e9"))
 #' }
 wfo_suggest <- function(scientific_name,
                         limit = 10,
@@ -116,12 +117,13 @@ wfo_suggest <- function(scientific_name,
 #' Return the best accepted WFO Plant List name
 #'
 #' Summarise WFO Plant List suggestions into one accepted-name interpretation
-#' per input scientific name. YList functions such as [academic_name()] handle
+#' per input scientific name. Lookup functions such as [scientific_name()] handle
 #' Japanese name to scientific name lookup; this helper handles scientific name
 #' to WFO candidate, accepted name, WFO ID, rank, and status checks.
 #'
 #' WFO API access is intended for small-scale interactive checks. These
-#' functions do not automatically replace YList names with WFO accepted names.
+#' functions do not automatically replace checklist names with WFO accepted
+#' names.
 #'
 #' @param scientific_name Character vector of scientific names.
 #' @param rank Character scalar rank to prefer, usually `"species"`.
@@ -144,7 +146,7 @@ wfo_suggest <- function(scientific_name,
 #' \dontrun{
 #' wfo_accepted_name("Quercus serrata")
 #' wfo_accepted_name("Quercus serrata", with_author = FALSE)
-#' wfo_accepted_name(academic_name("\u30b3\u30ca\u30e9"))
+#' wfo_accepted_name(scientific_name("\u30b3\u30ca\u30e9"))
 #' }
 wfo_accepted_name <- function(scientific_name,
                               rank = "species",

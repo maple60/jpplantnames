@@ -1,10 +1,11 @@
 konara <- "\u30b3\u30ca\u30e9"
 mizunara <- "\u30df\u30ba\u30ca\u30e9"
 
-test_that("ylist_info returns a scalar summary and keeps YList candidates", {
+test_that("japanese_name_info returns a scalar summary and keeps checklist candidates", {
   with_fixture_cache({
-    result <- ylist_info(konara)
+    result <- japanese_name_info(konara)
 
+    expect_s3_class(result, "japanese_name_info")
     expect_s3_class(result, "ylist_info")
     expect_equal(result$query, konara)
     expect_equal(nrow(result$summary), 1L)
@@ -14,19 +15,20 @@ test_that("ylist_info returns a scalar summary and keeps YList candidates", {
       result$summary$scientific_name_with_author[[1]],
       "Quercus serrata Murray"
     )
-    expect_equal(result$summary$n_ylist_candidates[[1]], 2L)
+    expect_equal(result$summary$n_japanese_name_candidates[[1]], 4L)
     expect_equal(result$summary$match_status[[1]], "matched")
-    expect_equal(nrow(result$ylist), 2L)
-    expect_equal(sum(result$ylist$is_preferred), 1L)
+    expect_equal(nrow(result$japanese_name), 4L)
+    expect_equal(sum(result$japanese_name$is_preferred), 1L)
+    expect_identical(result$ylist, result$japanese_name)
     expect_null(result$wfo)
     expect_null(result$gbif)
   })
 })
 
-test_that("ylist_info preserves vector input order and length", {
+test_that("japanese_name_info preserves vector input order and length", {
   with_fixture_cache({
     input <- c(konara, mizunara, "not-a-name")
-    result <- ylist_info(input, with_author = FALSE)
+    result <- japanese_name_info(input, with_author = FALSE)
 
     expect_equal(result$summary$input, input)
     expect_equal(nrow(result$summary), length(input))
@@ -36,23 +38,23 @@ test_that("ylist_info preserves vector input order and length", {
     )
     expect_equal(
       result$summary$match_status,
-      c("matched", "matched", "no_ylist_match")
+      c("matched", "matched", "no_japanese_name_match")
     )
   })
 })
 
-test_that("ylist_info handles invalid input without lookup errors", {
+test_that("japanese_name_info handles invalid input without lookup errors", {
   with_fixture_cache({
-    result <- ylist_info(c(NA_character_, "", "   "))
+    result <- japanese_name_info(c(NA_character_, "", "   "))
 
     expect_equal(nrow(result$summary), 3L)
     expect_equal(result$summary$match_status, rep("invalid_input", 3))
-    expect_equal(result$summary$n_ylist_candidates, rep(0L, 3))
-    expect_equal(nrow(result$ylist), 0L)
+    expect_equal(result$summary$n_japanese_name_candidates, rep(0L, 3))
+    expect_equal(nrow(result$japanese_name), 0L)
   })
 })
 
-test_that("ylist_info does not call external APIs by default", {
+test_that("japanese_name_info does not call external APIs by default", {
   calls <- character()
   old_options <- options(
     ylistjp.wfo_graphql = function(query, variables, endpoint) {
@@ -67,7 +69,7 @@ test_that("ylist_info does not call external APIs by default", {
   on.exit(options(old_options), add = TRUE)
 
   with_fixture_cache({
-    result <- ylist_info(konara)
+    result <- japanese_name_info(konara)
 
     expect_null(result$wfo)
     expect_null(result$gbif)
@@ -75,17 +77,17 @@ test_that("ylist_info does not call external APIs by default", {
   })
 })
 
-test_that("print.ylist_info does not error", {
+test_that("print.japanese_name_info does not error", {
   with_fixture_cache({
-    scalar <- ylist_info(konara)
-    vector <- ylist_info(c(konara, mizunara))
+    scalar <- japanese_name_info(konara)
+    vector <- japanese_name_info(c(konara, mizunara))
 
-    expect_output(print(scalar), "YList info")
+    expect_output(print(scalar), "Japanese name info")
     expect_output(print(vector), "match_status")
   })
 })
 
-test_that("ylist_info can add a mocked WFO accepted-name summary", {
+test_that("japanese_name_info can add a mocked WFO accepted-name summary", {
   calls <- character()
   old_options <- options(
     ylistjp.wfo_graphql = function(query, variables, endpoint) {
@@ -110,7 +112,7 @@ test_that("ylist_info can add a mocked WFO accepted-name summary", {
   on.exit(options(old_options), add = TRUE)
 
   with_fixture_cache({
-    result <- ylist_info(konara, wfo = TRUE, cache = FALSE, delay = 0)
+    result <- japanese_name_info(konara, wfo = TRUE, cache = FALSE, delay = 0)
 
     expect_equal(calls, "Quercus serrata")
     expect_s3_class(result$wfo, "data.frame")
@@ -120,7 +122,7 @@ test_that("ylist_info can add a mocked WFO accepted-name summary", {
   })
 })
 
-test_that("ylist_info records WFO failures without failing the whole call", {
+test_that("japanese_name_info records WFO failures without failing the whole call", {
   old_options <- options(
     ylistjp.wfo_graphql = function(query, variables, endpoint) {
       stop("mock WFO failure", call. = FALSE)
@@ -130,7 +132,7 @@ test_that("ylist_info records WFO failures without failing the whole call", {
 
   with_fixture_cache({
     expect_warning(
-      result <- ylist_info(konara, wfo = TRUE, cache = FALSE, delay = 0),
+      result <- japanese_name_info(konara, wfo = TRUE, cache = FALSE, delay = 0),
       "WFO lookup failed"
     )
 
@@ -138,7 +140,7 @@ test_that("ylist_info records WFO failures without failing the whole call", {
   })
 })
 
-test_that("ylist_info can add a mocked GBIF match summary", {
+test_that("japanese_name_info can add a mocked GBIF match summary", {
   calls <- character()
   old_options <- options(
     ylistjp.gbif_match = function(scientific_name) {
@@ -163,7 +165,7 @@ test_that("ylist_info can add a mocked GBIF match summary", {
   on.exit(options(old_options), add = TRUE)
 
   with_fixture_cache({
-    result <- ylist_info(konara, gbif = TRUE)
+    result <- japanese_name_info(konara, gbif = TRUE)
 
     expect_equal(calls, "Quercus serrata")
     expect_s3_class(result$gbif, "data.frame")
@@ -174,7 +176,7 @@ test_that("ylist_info can add a mocked GBIF match summary", {
   })
 })
 
-test_that("ylist_info records GBIF failures without failing the whole call", {
+test_that("japanese_name_info records GBIF failures without failing the whole call", {
   old_options <- options(
     ylistjp.gbif_match = function(scientific_name) {
       stop("mock GBIF failure", call. = FALSE)
@@ -184,10 +186,21 @@ test_that("ylist_info records GBIF failures without failing the whole call", {
 
   with_fixture_cache({
     expect_warning(
-      result <- ylist_info(konara, gbif = TRUE),
+      result <- japanese_name_info(konara, gbif = TRUE),
       "GBIF lookup failed"
     )
 
     expect_equal(result$summary$gbif_status[[1]], "error")
+  })
+})
+
+test_that("old info function name is a deprecated wrapper", {
+  with_fixture_cache({
+    expect_warning(
+      result <- ylist_info(konara),
+      "deprecated"
+    )
+    expect_s3_class(result, "japanese_name_info")
+    expect_equal(result$summary$scientific_name[[1]], "Quercus serrata")
   })
 })

@@ -24,10 +24,10 @@ English version: [Maintenance guide](maintenance.html)
 
 | 直したいこと | 主に見るファイル |
 | --- | --- |
-| YList のダウンロード URL、キャッシュファイル名、キャッシュ場所 | `R/cache.R` |
-| タブ区切り YList ファイルの読み込み方法 | `R/load.R` |
-| `academic_name()` の挙動 | `R/lookup.R`, `tests/testthat/test-lookup.R` |
-| `ylist_search()` の検索対象やマッチ規則 | `R/lookup.R`, `tests/testthat/test-lookup.R` |
+| チェックリストのダウンロード URL、キャッシュファイル名、キャッシュ場所 | `R/cache.R` |
+| チェックリスト Excel ファイルの読み込み方法 | `R/load.R` |
+| `scientific_name()` の挙動 | `R/lookup.R`, `tests/testthat/test-lookup.R` |
+| `japanese_name_search()` の検索対象やマッチ規則 | `R/lookup.R`, `tests/testthat/test-lookup.R` |
 | GBIF API の返却列や挙動 | `R/gbif.R`, `tests/testthat/test-gbif.R` |
 | export する関数 | `NAMESPACE`, `man/` 以下の対応する `.Rd` |
 | パッケージ情報、依存関係、サイト URL | `DESCRIPTION` |
@@ -42,13 +42,13 @@ English version: [Maintenance guide](maintenance.html)
 
 ## 関数ごとの保守ポイント
 
-### `ylist_download()`
+### `japanese_name_download()`
 
 実装は `R/cache.R` です。
 
 ここを直す典型例:
 
-- YList の公開タブ区切りファイル URL が変わった。
+- チェックリスト Excel ファイルの URL が変わった。
 - キャッシュファイル名を変えたい。
 - テスト用 fixture のコピー方法を変えたい。
 - キャッシュディレクトリの決め方を変えたい。
@@ -56,21 +56,20 @@ English version: [Maintenance guide](maintenance.html)
 返り値は、現在の仕様ではキャッシュ済みファイルパスを invisibly に返します。
 キャッシュ関連のテストは `tests/testthat/test-cache-load.R` にあります。
 
-### `ylist_load()`
+### `japanese_name_load()`
 
 実装は `R/load.R` です。
 
 ここを直す典型例:
 
-- YList ファイルの文字コードが変わった。
-- 区切り文字やヘッダーの扱いが変わった。
+- チェックリストのシート名や必須列が変わった。
 - 読み込み後の整形処理を追加したい。
 
-現在は YList の公開タブ区切りファイルを CP932 として読み込んでいます。
+現在はチェックリスト Excel ファイルの `JN_dataset` シートを読み込んでいます。
 単体テストでは本番の巨大ファイルを直接ダウンロードせず、小さな合成 fixture
-で文字コードと列構造を確認します。
+で列構造を確認します。
 
-### `academic_name()`
+### `scientific_name()`
 
 実装は `R/lookup.R` です。
 
@@ -84,14 +83,14 @@ English version: [Maintenance guide](maintenance.html)
 
 現在の仕様は保守的です。
 
-- YList の `和名` 列を完全一致で検索します。
+- チェックリストの `和名` 列と `別名` 列を完全一致で検索します。
 - `ステータス == "標準"` の行だけを使います。
 - 見つからない場合は `NA_character_` を返します。
 - 標準行が複数ある場合は自動で選ばず、エラーにします。
 
 この仕様を変えた場合は、README、日英の使い方ガイド、テストも一緒に更新します。
 
-### `ylist_search()`
+### `japanese_name_search()`
 
 実装は `R/lookup.R` です。
 
@@ -103,7 +102,7 @@ English version: [Maintenance guide](maintenance.html)
 - 候補のランキングを追加したい。
 
 検索機能は、候補を人間が確認できるようにするための関数です。
-`academic_name()` を暗黙の fuzzy lookup に変えるより、検索候補を明示的に返す設計を優先します。
+`scientific_name()` を暗黙の fuzzy lookup に変えるより、検索候補を明示的に返す設計を優先します。
 
 ### `gbif_match()`
 

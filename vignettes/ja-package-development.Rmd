@@ -26,18 +26,18 @@ English version: [Building ylistjp as an R package](package-development.html)
 最初の目標は単純です。
 
 ```{r}
-academic_name("コナラ")
+scientific_name("コナラ")
 #> [1] "Quercus serrata"
 ```
 
 この短い API の裏側には、いくつかの設計判断があります。
 
-- YList の非公式 wrapper として作る。
-- YList データはパッケージに同梱しない。
-- 公開タブ区切りファイルは、必要になったときだけ取得する。
+- 「維管束植物和名チェックリスト ver. 1.10」の非公式 wrapper として作る。
+- チェックリストデータはパッケージに同梱しない。
+- チェックリスト Excel ファイルは、必要になったときだけ取得する。
 - 2 回目以降の検索ではローカルキャッシュを使う。
 - 完全一致を基本にし、曖昧な候補を自動で選ばない。
-- 国際的な学名確認は任意機能として YList 検索から分ける。
+- 国際的な学名確認は任意機能としてチェックリスト検索から分ける。
 
 小さな関数群ですが、データ取得、文字コード、キャッシュ、テスト、
 ドキュメント、GitHub Actions まで含むため、R パッケージ作成の教材として
@@ -53,7 +53,7 @@ academic_name("コナラ")
 | `NAMESPACE` | ユーザーに公開する関数。 |
 | `R/` | キャッシュ、読み込み、検索、GBIF 補助関数の実装。 |
 | `man/` | roxygen コメントから作られる関数リファレンス。 |
-| `tests/testthat/` | 単体テストと小さな合成 YList fixture。 |
+| `tests/testthat/` | 単体テストと小さな合成チェックリスト fixture。 |
 | `vignettes/` | 使い方ガイドやメンテナンスガイドなどの記事。 |
 | `_pkgdown.yml` | ドキュメントサイトのナビゲーションと reference 分類。 |
 | `.github/workflows/` | R package check と pkgdown deploy の GitHub Actions。 |
@@ -69,94 +69,90 @@ academic_name("コナラ")
 ```{r}
 library(ylistjp)
 
-academic_name("コナラ")
-academic_name("コナラ", with_author = TRUE)
-ylist_search("コナラ")
+scientific_name("コナラ")
+scientific_name("コナラ", with_author = TRUE)
+japanese_name_search("コナラ")
 ```
 
 その周辺に、役割のはっきりした関数を置いています。
 
 | 関数 | 役割 |
 | --- | --- |
-| `ylist_download()` | YList の公開タブ区切りファイルをユーザーキャッシュへ保存する。 |
-| `ylist_load()` | キャッシュ済みファイルを `data.frame` として読み込む。 |
-| `academic_name()` | 和名の完全一致から標準学名を返す。 |
-| `ylist_search()` | 候補行を返し、人間が確認できるようにする。 |
+| `japanese_name_download()` | チェックリスト Excel ファイルをユーザーキャッシュへ保存する。 |
+| `japanese_name_load()` | キャッシュ済みファイルを `data.frame` として読み込む。 |
+| `scientific_name()` | 和名の完全一致から標準学名を返す。 |
+| `japanese_name_search()` | 候補行を返し、人間が確認できるようにする。 |
 | `gbif_match()` | 学名を GBIF と照合する任意の補助関数。 |
 
-この分け方にすると、簡単な用途は `academic_name()` だけで済み、必要な人は
+この分け方にすると、簡単な用途は `scientific_name()` だけで済み、必要な人は
 元データや候補行も確認できます。
 
-## YList データをパッケージに同梱しない
+## チェックリストデータをパッケージに同梱しない
 
-`ylistjp` は YList データをパッケージ内に入れていません。データの流れは
+`ylistjp` はチェックリストデータをパッケージ内に入れていません。データの流れは
 次の通りです。
 
-1. `academic_name()`、`ylist_search()`、`ylist_load()` が YList データを必要とする。
-2. キャッシュがなければ `ylist_download()` が公開タブ区切りファイルを取得する。
+1. `scientific_name()`、`japanese_name_search()`、`japanese_name_load()` がチェックリストデータを必要とする。
+2. キャッシュがなければ `japanese_name_download()` がチェックリスト Excel ファイルを取得する。
 3. ファイルをユーザーの R キャッシュディレクトリに保存する。
-4. 以後の検索では YList サーバーではなくローカルファイルを読む。
+4. 以後の検索ではチェックリスト配布元ではなくローカルファイルを読む。
 
 この設計には 2 つの意味があります。まず、パッケージコードを MIT ライセンスで
-公開しても、YList データそのものを再配布しません。次に、解析で何度検索しても、
-検索のたびに YList サーバーへ問い合わせることがありません。
+公開しても、チェックリストデータそのものを再配布しません。次に、解析で何度検索しても、
+検索のたびに配布元サーバーへ問い合わせることがありません。
 
 明示的に更新したい場合だけ、次のようにします。
 
 ```{r}
-ylist_download(overwrite = TRUE)
-ylist_load(refresh = TRUE)
+japanese_name_download(overwrite = TRUE)
+japanese_name_load(refresh = TRUE)
 ```
 
-## 日本語データの文字コードを明示する
+## チェックリスト Excel を明示的に読む
 
-YList の公開タブ区切りファイルは CP932 として読み込んでいます。
+チェックリストは `readxl` で `JN_dataset` シートを読み込んでいます。
 
 ```{r}
-utils::read.delim(
-  file = path,
-  sep = "\t",
-  fileEncoding = "CP932",
-  encoding = "UTF-8",
-  stringsAsFactors = FALSE,
-  check.names = FALSE
+readxl::read_excel(
+  path = path,
+  sheet = "JN_dataset",
+  col_types = "text"
 )
 ```
 
-これは重要な実装ポイントです。日本語の公開データでは Shift-JIS や CP932 が
-使われていることがあります。R に文字コードの推測を任せると、環境によって
-`和名`、`学名`、`ステータス` などの列名が読めなくなる可能性があります。
+これは重要な実装ポイントです。チェックリストの列を、パッケージ内部で使う
+`和名`、`別名`、`学名`、`学名 withAuthor` などの安定した列へ正規化します。
 
 ソースコード中の列名は、環境をまたいで編集しやすくするため、必要に応じて
 Unicode escape で保持しています。
 
 ## 検索は保守的にする
 
-`academic_name()` は fuzzy search ではなく、解析で安定して使うための関数です。
+`scientific_name()` は fuzzy search ではなく、解析で安定して使うための関数です。
 現在の仕様は意図的に狭くしています。
 
-- YList の `和名` 列を完全一致で検索する。
+- チェックリストの `和名` 列と `別名` 列を完全一致で検索する。
 - `ステータス == "標準"` の行だけを使う。
 - 標準の完全一致がない場合は `NA_character_` を返す。
 - 標準の完全一致が複数ある場合はエラーにする。
 
 これにより、疑わしい候補をスクリプトが静かに採用することを避けます。
-曖昧な場合は `ylist_search()` で候補を確認します。
+曖昧な場合は `japanese_name_search()` で候補を確認します。
 
 ## テストでは小さな fixture を使う
 
-単体テストでは、YList 本体の大きなファイルを毎回ダウンロードしません。
+単体テストでは、チェックリスト本体の大きなファイルを毎回ダウンロードしません。
 代わりに、挙動確認に必要な最小限の行だけを含む合成 fixture を使います。
 
 この fixture で確認している主な点は次の通りです。
 
-- CP932 のタブ区切りファイルを読めること。
-- `標準` 行と synonym 行を区別できること。
+- Excel シートを読めること。
+- common name と another name の検索を確認できること。
 - 見つからない場合に `NA_character_` を返すこと。
 - 複数候補がある場合にエラーになること。
 - キャッシュの再利用と更新が動くこと。
 
-GBIF や YList への live test は任意にします。外部 API の確認は smoke test としては
+GBIF やチェックリストへの live test は任意にします。外部 API の確認は smoke test としては
 有用ですが、通常のローカルテストや pull request のたびに必須にすると不安定に
 なりやすいためです。
 
@@ -178,12 +174,12 @@ GitHub Actions で pkgdown を実行し、生成されたサイトを GitHub Pag
 次の機能を足す場合も、保守的な既定動作を保つのが安全です。
 
 - ひらがな・カタカナ変換や全角・半角の正規化を明示的に追加する。
-- `ylist_search()` に候補ランキングを追加する。
+- `japanese_name_search()` に候補ランキングを追加する。
 - WFO や Catalogue of Life などの任意チェック関数を追加する。
-- 監査用に YList の追加メタデータを返せるようにする。
-- `academic_name()` の結果をデータフレームに結合する実例記事を追加する。
+- 監査用にチェックリストの追加メタデータを返せるようにする。
+- `scientific_name()` の結果をデータフレームに結合する実例記事を追加する。
 
-探索的な機能は `ylist_search()` や補助関数に寄せ、`academic_name()` はスクリプトで
+探索的な機能は `japanese_name_search()` や補助関数に寄せ、`scientific_name()` はスクリプトで
 予測しやすい挙動のままにしておくのが基本方針です。
 
 ## 次に読むもの

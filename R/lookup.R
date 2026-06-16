@@ -5,7 +5,7 @@ col_scientific_name_author <- "\u5b66\u540d withAuthor"
 col_status <- "\u30b9\u30c6\u30fc\u30bf\u30b9"
 status_standard <- "\u6a19\u6e96"
 
-required_ylist_columns <- c(
+required_japanese_name_columns <- c(
   col_japanese_name,
   col_alias_name,
   col_scientific_name,
@@ -13,11 +13,11 @@ required_ylist_columns <- c(
   col_status
 )
 
-check_ylist_columns <- function(data, required = required_ylist_columns) {
+check_japanese_name_columns <- function(data, required = required_japanese_name_columns) {
   missing <- setdiff(required, names(data))
   if (length(missing) > 0) {
     stop(
-      "YList data is missing required column(s): ",
+      "Lookup data is missing required column(s): ",
       paste(missing, collapse = ", "),
       call. = FALSE
     )
@@ -28,8 +28,8 @@ check_ylist_columns <- function(data, required = required_ylist_columns) {
 
 #' Look up scientific names from Japanese plant names
 #'
-#' Exact-matches Japanese names in YList and returns the standard scientific
-#' name.
+#' Exact-matches Japanese names in the cached checklist data and returns the
+#' scientific name.
 #'
 #' @param name Character vector of Japanese plant names.
 #' @param with_author Logical. If `TRUE`, include the name author.
@@ -40,10 +40,10 @@ check_ylist_columns <- function(data, required = required_ylist_columns) {
 #'
 #' @examples
 #' \dontrun{
-#' academic_name("\u30b3\u30ca\u30e9")
-#' academic_name("\u30b3\u30ca\u30e9", with_author = TRUE)
+#' scientific_name("\u30b3\u30ca\u30e9")
+#' scientific_name("\u30b3\u30ca\u30e9", with_author = TRUE)
 #' }
-academic_name <- function(name, with_author = FALSE) {
+scientific_name <- function(name, with_author = FALSE) {
   if (!is.character(name)) {
     stop("`name` must be a character vector.", call. = FALSE)
   }
@@ -51,11 +51,12 @@ academic_name <- function(name, with_author = FALSE) {
     stop("`with_author` must be TRUE or FALSE.", call. = FALSE)
   }
 
-  data <- ylist_data()
-  check_ylist_columns(
+  data <- japanese_name_data()
+  check_japanese_name_columns(
     data,
     required = c(
       col_japanese_name,
+      col_alias_name,
       col_scientific_name,
       col_scientific_name_author,
       col_status
@@ -66,7 +67,7 @@ academic_name <- function(name, with_author = FALSE) {
 
   vapply(
     name,
-    lookup_one_academic_name,
+    lookup_one_scientific_name,
     data = data,
     column = column,
     FUN.VALUE = character(1),
@@ -74,13 +75,24 @@ academic_name <- function(name, with_author = FALSE) {
   )
 }
 
-lookup_one_academic_name <- function(name, data, column) {
+#' @export
+academic_name <- function(name, with_author = FALSE) {
+  .Deprecated("scientific_name")
+  scientific_name(name, with_author = with_author)
+}
+
+lookup_one_scientific_name <- function(name, data, column) {
   if (is.na(name)) {
     return(NA_character_)
   }
 
+  japanese_match <- data[[col_japanese_name]] == name
+  alias_match <- data[[col_alias_name]] == name
+  japanese_match[is.na(japanese_match)] <- FALSE
+  alias_match[is.na(alias_match)] <- FALSE
+
   hits <- data[
-    data[[col_japanese_name]] == name & data[[col_status]] == status_standard,
+    (japanese_match | alias_match) & data[[col_status]] == status_standard,
     ,
     drop = FALSE
   ]
@@ -89,11 +101,11 @@ lookup_one_academic_name <- function(name, data, column) {
     return(NA_character_)
   }
 
-  if (nrow(hits) > 1) {
+  if (nrow(hits) > 1 && !is_checklist_data(hits)) {
     stop(
-      "Multiple standard YList matches found for `",
+      "Multiple standard lookup matches found for `",
       name,
-      "`. Use ylist_search(\"",
+      "`. Use japanese_name_search(\"",
       name,
       "\") to inspect candidates.",
       call. = FALSE
@@ -108,19 +120,19 @@ lookup_one_academic_name <- function(name, data, column) {
   value
 }
 
-#' Search YList rows
+#' Search cached checklist rows
 #'
-#' Search YList rows by Japanese name, scientific name, alias, or all of those
-#' fields.
+#' Search cached checklist rows by Japanese name, scientific name, alias, or all
+#' of those fields.
 #'
 #' @param query Character scalar to search for.
 #' @param field Field to search: `japanese`, `scientific`, `alias`, or `all`.
 #' @param exact Logical. If `TRUE`, use exact matching; otherwise use partial
 #'   fixed-string matching.
 #'
-#' @return A data frame of matching YList rows.
+#' @return A data frame of matching lookup rows.
 #' @export
-ylist_search <- function(query, field = c("japanese", "scientific", "alias", "all"), exact = FALSE) {
+japanese_name_search <- function(query, field = c("japanese", "scientific", "alias", "all"), exact = FALSE) {
   if (!is.character(query) || length(query) != 1 || is.na(query)) {
     stop("`query` must be a non-missing character scalar.", call. = FALSE)
   }
@@ -129,8 +141,8 @@ ylist_search <- function(query, field = c("japanese", "scientific", "alias", "al
   }
 
   field <- match.arg(field)
-  data <- ylist_data()
-  check_ylist_columns(data)
+  data <- japanese_name_data()
+  check_japanese_name_columns(data)
 
   columns <- switch(
     field,
@@ -147,7 +159,7 @@ ylist_search <- function(query, field = c("japanese", "scientific", "alias", "al
 
   mask <- Reduce(
     `|`,
-    lapply(columns, function(column) match_ylist_column(data[[column]], query, exact = exact))
+    lapply(columns, function(column) match_japanese_name_column(data[[column]], query, exact = exact))
   )
 
   result <- data[mask, , drop = FALSE]
@@ -155,7 +167,13 @@ ylist_search <- function(query, field = c("japanese", "scientific", "alias", "al
   result
 }
 
-match_ylist_column <- function(values, query, exact) {
+#' @export
+ylist_search <- function(query, field = c("japanese", "scientific", "alias", "all"), exact = FALSE) {
+  .Deprecated("japanese_name_search")
+  japanese_name_search(query = query, field = field, exact = exact)
+}
+
+match_japanese_name_column <- function(values, query, exact) {
   values[is.na(values)] <- ""
   if (exact) {
     return(values == query)
@@ -164,12 +182,12 @@ match_ylist_column <- function(values, query, exact) {
   grepl(tolower(query), tolower(values), fixed = TRUE)
 }
 
-#' Suggest YList rows for an approximate Japanese plant name
+#' Suggest lookup rows for an approximate Japanese plant name
 #'
-#' `ylist_suggest()` is a small interactive helper for finding likely YList
+#' `japanese_name_suggest()` is a small interactive helper for finding likely lookup
 #' rows before converting Japanese names to scientific names. It searches only
-#' the YList Japanese-name column and does not change or autocorrect
-#' [academic_name()] results.
+#' the cached lookup Japanese-name column and does not change or autocorrect
+#' [scientific_name()] results.
 #'
 #' @param query Character scalar Japanese plant name to search for.
 #' @param n Maximum number of candidate rows to return.
@@ -177,16 +195,16 @@ match_ylist_column <- function(values, query, exact) {
 #'   the default is 1 for normalized queries with 3 or fewer characters and 2
 #'   for longer queries.
 #'
-#' @return A data frame containing YList rows plus `query`, `matched_value`,
+#' @return A data frame containing lookup rows plus `query`, `matched_value`,
 #'   `distance`, `score`, and `match_type`.
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' ylist_suggest("\u30b3\u30ca\u30e9")
-#' ylist_suggest("\u30ca\u30e9")
+#' japanese_name_suggest("\u30b3\u30ca\u30e9")
+#' japanese_name_suggest("\u30ca\u30e9")
 #' }
-ylist_suggest <- function(query, n = 10, max_distance = NULL) {
+japanese_name_suggest <- function(query, n = 10, max_distance = NULL) {
   if (!is.character(query) || length(query) != 1 || is.na(query)) {
     stop("`query` must be a non-missing character scalar.", call. = FALSE)
   }
@@ -211,10 +229,10 @@ ylist_suggest <- function(query, n = 10, max_distance = NULL) {
     stop("`max_distance` must be NULL or a non-negative number.", call. = FALSE)
   }
 
-  data <- ylist_data()
-  check_ylist_columns(data, required = col_japanese_name)
+  data <- japanese_name_data()
+  check_japanese_name_columns(data, required = col_japanese_name)
 
-  query_key <- normalize_ylist_japanese_name(query)
+  query_key <- normalize_japanese_name(query)
   if (is.na(query_key) || identical(query_key, "")) {
     stop("`query` must not be empty after normalization.", call. = FALSE)
   }
@@ -223,10 +241,10 @@ ylist_suggest <- function(query, n = 10, max_distance = NULL) {
     max_distance <- if (nchar(query_key, type = "chars") <= 3L) 1 else 2
   }
 
-  candidate_keys <- normalize_ylist_japanese_name(data[[col_japanese_name]])
+  candidate_keys <- normalize_japanese_name(data[[col_japanese_name]])
   valid <- !is.na(candidate_keys) & candidate_keys != ""
   distances <- rep(Inf, length(candidate_keys))
-  distances[valid] <- ylist_string_distance(query_key, candidate_keys[valid])
+  distances[valid] <- japanese_name_string_distance(query_key, candidate_keys[valid])
 
   exact <- valid & candidate_keys == query_key
   partial <- rep(FALSE, length(candidate_keys))
@@ -240,7 +258,7 @@ ylist_suggest <- function(query, n = 10, max_distance = NULL) {
 
   keep <- exact | partial | fuzzy
   if (!any(keep) || n == 0L) {
-    return(empty_ylist_suggest(data))
+    return(empty_japanese_name_suggest(data))
   }
 
   result <- data[keep, , drop = FALSE]
@@ -272,7 +290,13 @@ ylist_suggest <- function(query, n = 10, max_distance = NULL) {
   result
 }
 
-normalize_ylist_japanese_name <- function(x) {
+#' @export
+ylist_suggest <- function(query, n = 10, max_distance = NULL) {
+  .Deprecated("japanese_name_suggest")
+  japanese_name_suggest(query = query, n = n, max_distance = max_distance)
+}
+
+normalize_japanese_name <- function(x) {
   x <- enc2utf8(x)
   if (requireNamespace("stringi", quietly = TRUE)) {
     x <- stringi::stri_trans_nfkc(x)
@@ -282,7 +306,7 @@ normalize_ylist_japanese_name <- function(x) {
   gsub("[[:space:]\u3000]+", "", x, perl = TRUE)
 }
 
-ylist_string_distance <- function(query_key, candidate_keys) {
+japanese_name_string_distance <- function(query_key, candidate_keys) {
   if (length(candidate_keys) == 0L) {
     return(numeric())
   }
@@ -298,7 +322,7 @@ ylist_string_distance <- function(query_key, candidate_keys) {
   as.numeric(utils::adist(query_key, candidate_keys))
 }
 
-empty_ylist_suggest <- function(data) {
+empty_japanese_name_suggest <- function(data) {
   result <- data[0, , drop = FALSE]
   result$query <- character()
   result$matched_value <- character()
@@ -306,4 +330,8 @@ empty_ylist_suggest <- function(data) {
   result$score <- numeric()
   result$match_type <- character()
   result
+}
+
+is_checklist_data <- function(data) {
+  all(c("source_id", "source") %in% names(data))
 }

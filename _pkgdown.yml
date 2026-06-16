@@ -7,7 +7,7 @@ home:
   title: ylistjp
   description: >
     Unofficial R helpers for looking up scientific plant names from Japanese
-    names using the public YList tab-delimited data file.
+    names using the Vascular Plant Japanese Name Checklist ver. 1.10.
 
 navbar:
   structure:
@@ -55,16 +55,17 @@ reference:
   contents:
   - ylistjp-package
 - title: Data access
-  desc: Download and load the public YList tab-delimited file.
+  desc: Download and load the checklist Excel file.
   contents:
-  - ylist_download
-  - ylist_load
+  - japanese_name_download
+  - japanese_name_load
 - title: Name lookup
-  desc: Search YList rows and retrieve scientific names.
+  desc: Search cached checklist rows and retrieve scientific names.
   contents:
-  - academic_name
-  - ylist_search
-  - ylist_suggest
+  - scientific_name
+  - japanese_name_search
+  - japanese_name_suggest
+  - japanese_name_info
 - title: International checks
   desc: Optional helper for checking scientific names against GBIF.
   contents:
