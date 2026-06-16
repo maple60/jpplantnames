@@ -67,6 +67,8 @@ reference:
   - japanese_name_suggest
   - japanese_name_info
 - title: International checks
-  desc: Optional helper for checking scientific names against GBIF.
+  desc: Optional helpers for checking scientific names against WFO and GBIF.
   contents:
+  - wfo_suggest
+  - wfo_accepted_name
   - gbif_match
