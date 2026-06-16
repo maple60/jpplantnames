@@ -64,6 +64,7 @@ reference:
   contents:
   - academic_name
   - ylist_search
+  - ylist_suggest
 - title: International checks
   desc: Optional helper for checking scientific names against GBIF.
   contents:
