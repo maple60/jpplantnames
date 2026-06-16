@@ -1,0 +1,56 @@
+\name{wfo_suggest}
+\alias{wfo_suggest}
+\title{Suggest WFO Plant List names for a scientific name}
+\usage{
+wfo_suggest(
+  scientific_name,
+  limit = 10,
+  rank = NULL,
+  cache = TRUE,
+  refresh = FALSE,
+  delay = 0.2,
+  backend = c("api", "local")
+)
+}
+\arguments{
+\item{scientific_name}{Character vector of scientific names.}
+
+\item{limit}{Integer. Maximum number of WFO suggestions to request per unique
+scientific name.}
+
+\item{rank}{Optional character scalar. If supplied, candidate rows are filtered
+by WFO rank after retrieval, for example \code{"species"}, \code{"subspecies"},
+or \code{"variety"}.}
+
+\item{cache}{Logical. If \code{TRUE}, raw API responses are cached locally.}
+
+\item{refresh}{Logical. If \code{TRUE}, ignore an existing cached response and
+fetch from the WFO API again.}
+
+\item{delay}{Numeric. Seconds to wait between uncached API requests.}
+
+\item{backend}{Character. Only \code{"api"} is implemented. \code{"local"} is
+reserved for future WFO release support.}
+}
+\value{
+A data frame with WFO candidate names, accepted-name fields, rank, status,
+role, and cache status.
+}
+\description{
+Query the WFO Plant List GraphQL API for candidate names. This is a small
+interactive helper for checking scientific names, such as names returned by
+\code{\link[=academic_name]{academic_name()}} or
+\code{\link[=ylist_search]{ylist_search()}}. It does not change YList results.
+}
+\details{
+WFO accepted names are database- and release-dependent. WFO API access is
+intended for small-scale interactive checks. For large-scale or reproducible
+workflows, use cached results and record the WFO release or use a future local
+WFO release workflow.
+}
+\examples{
+\dontrun{
+wfo_suggest("Quercus serrata")
+wfo_suggest(academic_name("コナラ"))
+}
+}

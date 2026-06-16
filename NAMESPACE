@@ -1,5 +1,7 @@
 export(academic_name)
 export(gbif_match)
+export(wfo_accepted_name)
+export(wfo_suggest)
 export(ylist_download)
 export(ylist_load)
 export(ylist_search)

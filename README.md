@@ -57,6 +57,25 @@ ylist_load(refresh = TRUE)
 
 ## International Name Checks
 
+### WFO Plant List checks
+
+`academic_name()` returns the YList scientific name. `wfo_suggest()` checks WFO
+candidate names, and `wfo_accepted_name()` summarizes the best WFO
+accepted-name interpretation. These functions do not change YList results.
+WFO API use should stay small-scale; for larger workflows, keep caching enabled
+and record the WFO release or version used.
+
+```r
+sci <- academic_name("コナラ")
+sci
+#> [1] "Quercus serrata"
+
+wfo_suggest(sci)
+wfo_accepted_name(sci)
+```
+
+### GBIF checks
+
 `gbif_match()` is a small optional helper around the GBIF species match API.
 It is intended for checking the scientific name returned from YList against an
 international biodiversity data source.
