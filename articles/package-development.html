@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Building ylistjp as an R package • ylistjp</title>
+<title>Building jpplantnames as an R package • jpplantnames</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Building ylistjp as an R package">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Building jpplantnames as an R package">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -18,7 +18,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="../index.html">ylistjp</a>
+    <a class="navbar-brand me-2" href="../index.html">jpplantnames</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
@@ -47,7 +47,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/maple60/ylistjp/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/maple60/jpplantnames/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -61,16 +61,16 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Building ylistjp as an R package</h1>
+      <h1>Building jpplantnames as an R package</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/maple60/ylistjp/blob/main/vignettes/package-development.Rmd" class="external-link"><code>vignettes/package-development.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/maple60/jpplantnames/blob/main/vignettes/package-development.Rmd" class="external-link"><code>vignettes/package-development.Rmd</code></a></small>
       <div class="d-none name"><code>package-development.Rmd</code></div>
     </div>
 
     
     
-<p>This article explains how <code>ylistjp</code> is organized as a
+<p>This article explains how <code>jpplantnames</code> is organized as a
 small R package. It is a worked example for people who want to learn how
 an R package can turn a useful public data source into a reproducible
 analysis tool.</p>
@@ -102,8 +102,8 @@ documentation, and GitHub Actions.</p>
 <div class="section level2">
 <h2 id="package-skeleton">Package Skeleton<a class="anchor" aria-label="anchor" href="#package-skeleton"></a>
 </h2>
-<p><code>ylistjp</code> follows the standard structure used by many R
-packages.</p>
+<p><code>jpplantnames</code> follows the standard structure used by many
+R packages.</p>
 <table class="table">
 <colgroup>
 <col width="50%">
@@ -159,7 +159,7 @@ each directory responsible for one kind of work: code in
 </h2>
 <p>The core user workflow is:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/maple60/ylistjp" class="external-link">ylistjp</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/maple60/jpplantnames" class="external-link">jpplantnames</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/scientific_name.html">scientific_name</a></span><span class="op">(</span><span class="st">"コナラ"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/scientific_name.html">scientific_name</a></span><span class="op">(</span><span class="st">"コナラ"</span>, with_author <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -205,8 +205,8 @@ advanced users to inspect the underlying data.</p>
 <div class="section level2">
 <h2 id="keep-checklist-data-outside-the-package">Keep Checklist Data Outside the Package<a class="anchor" aria-label="anchor" href="#keep-checklist-data-outside-the-package"></a>
 </h2>
-<p><code>ylistjp</code> does not bundle checklist data. Instead, the
-data flow is:</p>
+<p><code>jpplantnames</code> does not bundle checklist data. Instead,
+the data flow is:</p>
 <ol style="list-style-type: decimal">
 <li>
 <code><a href="../reference/scientific_name.html">scientific_name()</a></code>, <code><a href="../reference/japanese_name_search.html">japanese_name_search()</a></code>,
@@ -265,8 +265,8 @@ name. When a name is ambiguous, the user should inspect candidates with
 <h2 id="test-with-synthetic-fixtures">Test with Synthetic Fixtures<a class="anchor" aria-label="anchor" href="#test-with-synthetic-fixtures"></a>
 </h2>
 <p>Unit tests should not download the full checklist file. Instead,
-<code>ylistjp</code> uses a small synthetic fixture that contains just
-enough rows to test behavior:</p>
+<code>jpplantnames</code> uses a small synthetic fixture that contains
+just enough rows to test behavior:</p>
 <ul>
 <li>Excel sheet parsing;</li>
 <li>common-name versus alias lookup;</li>
@@ -339,7 +339,7 @@ each exported function.</li>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by ylistjp contributors.</p>
+  <p>Developed by jpplantnames contributors.</p>
 </div>
 
 <div class="pkgdown-footer-right">

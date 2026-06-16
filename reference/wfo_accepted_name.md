@@ -2,7 +2,7 @@
 
 Summarise WFO Plant List suggestions into one accepted-name
 interpretation per input scientific name. Lookup functions such as
-[`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
 handle Japanese name to scientific name lookup; this helper handles
 scientific name to WFO candidate, accepted name, WFO ID, rank, and
 status checks.

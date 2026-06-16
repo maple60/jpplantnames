@@ -1,4 +1,4 @@
 # License
 
     YEAR: 2026
-    COPYRIGHT HOLDER: ylistjp contributors
+    COPYRIGHT HOLDER: jpplantnames contributors

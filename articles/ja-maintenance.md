@@ -1,11 +1,11 @@
 # メンテナンスガイド
 
-このガイドは、`ylistjp`
+このガイドは、`jpplantnames`
 を保守するときに「何を直したい場合、どのファイルを
 見ればよいか」を素早く判断するための開発者向けメモです。
 
 English version: [Maintenance
-guide](https://maple60.github.io/ylistjp/articles/maintenance.md)
+guide](https://maple60.github.io/jpplantnames/articles/maintenance.md)
 
 ## どこを直すか
 
@@ -13,8 +13,8 @@ guide](https://maple60.github.io/ylistjp/articles/maintenance.md)
 |----|----|
 | チェックリストのダウンロード URL、キャッシュファイル名、キャッシュ場所 | `R/cache.R` |
 | チェックリスト Excel ファイルの読み込み方法 | `R/load.R` |
-| [`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md) の挙動 | `R/lookup.R`, `tests/testthat/test-lookup.R` |
-| [`japanese_name_search()`](https://maple60.github.io/ylistjp/reference/japanese_name_search.md) の検索対象やマッチ規則 | `R/lookup.R`, `tests/testthat/test-lookup.R` |
+| [`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md) の挙動 | `R/lookup.R`, `tests/testthat/test-lookup.R` |
+| [`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md) の検索対象やマッチ規則 | `R/lookup.R`, `tests/testthat/test-lookup.R` |
 | GBIF API の返却列や挙動 | `R/gbif.R`, `tests/testthat/test-gbif.R` |
 | export する関数 | `NAMESPACE`, `man/` 以下の対応する `.Rd` |
 | パッケージ情報、依存関係、サイト URL | `DESCRIPTION` |
@@ -91,7 +91,7 @@ fixture で列構造を確認します。
 - 候補のランキングを追加したい。
 
 検索機能は、候補を人間が確認できるようにするための関数です。
-[`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
 を暗黙の fuzzy lookup
 に変えるより、検索候補を明示的に返す設計を優先します。
 
@@ -107,7 +107,7 @@ fixture で列構造を確認します。
 
 GBIF の live test は通常 skip
 されます。ネットワークテストを明示的に走らせる場合は
-`YLISTJP_RUN_NETWORK_TESTS=true` を設定します。
+`JPPLANTNAMES_RUN_NETWORK_TESTS=true` を設定します。
 
 ## ドキュメントの方針
 
@@ -151,7 +151,7 @@ testthat::test_local(".", reporter = "summary")
 
 ``` sh
 R CMD build .
-R CMD check ylistjp_0.1.0.tar.gz --no-manual
+R CMD check jpplantnames_0.1.0.tar.gz --no-manual
 ```
 
 Windows で Pandoc が `PATH` にない場合は、vignettes や pkgdown の build
@@ -170,4 +170,5 @@ Windows で Pandoc が `PATH` にない場合は、vignettes や pkgdown の bui
 4.  `R CMD build` と `R CMD check` を実行する。
 5.  ドキュメントを変えた場合は pkgdown をローカル build する。
 6.  push 後に GitHub Actions の 2 つの workflow を確認する。
-7.  <https://maple60.github.io/ylistjp/> が更新されているか確認する。
+7.  <https://maple60.github.io/jpplantnames/>
+    が更新されているか確認する。

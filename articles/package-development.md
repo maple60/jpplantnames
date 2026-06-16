@@ -1,11 +1,12 @@
-# Building ylistjp as an R package
+# Building jpplantnames as an R package
 
-This article explains how `ylistjp` is organized as a small R package.
-It is a worked example for people who want to learn how an R package can
-turn a useful public data source into a reproducible analysis tool.
+This article explains how `jpplantnames` is organized as a small R
+package. It is a worked example for people who want to learn how an R
+package can turn a useful public data source into a reproducible
+analysis tool.
 
 For Japanese, see [日本語:
-パッケージ開発チュートリアル](https://maple60.github.io/ylistjp/articles/ja-package-development.md).
+パッケージ開発チュートリアル](https://maple60.github.io/jpplantnames/articles/ja-package-development.md).
 
 ## Start from a Small Problem
 
@@ -35,7 +36,7 @@ documentation, and GitHub Actions.
 
 ## Package Skeleton
 
-`ylistjp` follows the standard structure used by many R packages.
+`jpplantnames` follows the standard structure used by many R packages.
 
 | Path | Role in this package |
 |----|----|
@@ -59,7 +60,7 @@ The core user workflow is:
 
 ``` r
 
-library(ylistjp)
+library(jpplantnames)
 
 scientific_name("コナラ")
 scientific_name("コナラ", with_author = TRUE)
@@ -70,26 +71,27 @@ The package then exposes a few focused functions around that workflow:
 
 | Function | Purpose |
 |----|----|
-| [`japanese_name_download()`](https://maple60.github.io/ylistjp/reference/japanese_name_download.md) | Download the checklist Excel file into the user cache. |
-| [`japanese_name_load()`](https://maple60.github.io/ylistjp/reference/japanese_name_load.md) | Read the cached file as a `data.frame`. |
-| [`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md) | Return the standard scientific name for an exact Japanese-name match. |
-| [`japanese_name_search()`](https://maple60.github.io/ylistjp/reference/japanese_name_search.md) | Return candidate rows for manual inspection. |
-| [`gbif_match()`](https://maple60.github.io/ylistjp/reference/gbif_match.md) | Optionally check a scientific name against GBIF. |
+| [`japanese_name_download()`](https://maple60.github.io/jpplantnames/reference/japanese_name_download.md) | Download the checklist Excel file into the user cache. |
+| [`japanese_name_load()`](https://maple60.github.io/jpplantnames/reference/japanese_name_load.md) | Read the cached file as a `data.frame`. |
+| [`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md) | Return the standard scientific name for an exact Japanese-name match. |
+| [`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md) | Return candidate rows for manual inspection. |
+| [`gbif_match()`](https://maple60.github.io/jpplantnames/reference/gbif_match.md) | Optionally check a scientific name against GBIF. |
 
 This split keeps the simple use case simple, while still allowing
 advanced users to inspect the underlying data.
 
 ## Keep Checklist Data Outside the Package
 
-`ylistjp` does not bundle checklist data. Instead, the data flow is:
+`jpplantnames` does not bundle checklist data. Instead, the data flow
+is:
 
-1.  [`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md),
-    [`japanese_name_search()`](https://maple60.github.io/ylistjp/reference/japanese_name_search.md),
+1.  [`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md),
+    [`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md),
     or
-    [`japanese_name_load()`](https://maple60.github.io/ylistjp/reference/japanese_name_load.md)
+    [`japanese_name_load()`](https://maple60.github.io/jpplantnames/reference/japanese_name_load.md)
     needs checklist data.
 2.  If no cached file exists,
-    [`japanese_name_download()`](https://maple60.github.io/ylistjp/reference/japanese_name_download.md)
+    [`japanese_name_download()`](https://maple60.github.io/jpplantnames/reference/japanese_name_download.md)
     downloads the checklist Excel file.
 3.  The file is saved under the user’s R cache directory.
 4.  Later lookups read the cached file instead of contacting the
@@ -130,7 +132,7 @@ that makes the source code safer to edit across environments.
 
 ## Make Lookup Conservative
 
-[`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
 is designed for reproducible analysis, not fuzzy search. Its contract is
 intentionally narrow:
 
@@ -141,13 +143,13 @@ intentionally narrow:
 
 That behavior prevents a script from silently choosing a questionable
 name. When a name is ambiguous, the user should inspect candidates with
-[`japanese_name_search()`](https://maple60.github.io/ylistjp/reference/japanese_name_search.md).
+[`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md).
 
 ## Test with Synthetic Fixtures
 
 Unit tests should not download the full checklist file. Instead,
-`ylistjp` uses a small synthetic fixture that contains just enough rows
-to test behavior:
+`jpplantnames` uses a small synthetic fixture that contains just enough
+rows to test behavior:
 
 - Excel sheet parsing;
 - common-name versus alias lookup;
@@ -179,26 +181,26 @@ Good next features should preserve the conservative default behavior:
 - add explicit hiragana-to-katakana or width normalization before
   searching;
 - add richer candidate ranking to
-  [`japanese_name_search()`](https://maple60.github.io/ylistjp/reference/japanese_name_search.md);
+  [`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md);
 - add optional checks for WFO or Catalogue of Life;
 - expose more metadata from the checklist when users need audit trails;
 - add a small article showing how to join
-  [`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+  [`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
   results to a data frame.
 
 The safest pattern is to make exploratory features explicit in search or
 helper functions, while keeping
-[`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
 predictable for scripts.
 
 ## What to Read Next
 
 - [Usage
-  guide](https://maple60.github.io/ylistjp/articles/get-started.md)
+  guide](https://maple60.github.io/jpplantnames/articles/get-started.md)
   explains how to use the package.
 - [Maintenance
-  guide](https://maple60.github.io/ylistjp/articles/maintenance.md) maps
-  common changes to the files to edit.
+  guide](https://maple60.github.io/jpplantnames/articles/maintenance.md)
+  maps common changes to the files to edit.
 - [Function
-  reference](https://maple60.github.io/ylistjp/reference/index.md)
+  reference](https://maple60.github.io/jpplantnames/reference/index.md)
   documents each exported function.

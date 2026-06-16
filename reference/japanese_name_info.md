@@ -55,12 +55,12 @@ print(x, ...)
 - wfo:
 
   Logical. If `TRUE`, check the preferred checklist scientific name with
-  [`wfo_accepted_name()`](https://maple60.github.io/ylistjp/reference/wfo_accepted_name.md).
+  [`wfo_accepted_name()`](https://maple60.github.io/jpplantnames/reference/wfo_accepted_name.md).
 
 - gbif:
 
   Logical. If `TRUE`, check the preferred checklist scientific name with
-  [`gbif_match()`](https://maple60.github.io/ylistjp/reference/gbif_match.md).
+  [`gbif_match()`](https://maple60.github.io/jpplantnames/reference/gbif_match.md).
 
 - rank:
 
@@ -86,7 +86,7 @@ print(x, ...)
 - ...:
 
   Additional arguments passed to
-  [`wfo_accepted_name()`](https://maple60.github.io/ylistjp/reference/wfo_accepted_name.md)
+  [`wfo_accepted_name()`](https://maple60.github.io/jpplantnames/reference/wfo_accepted_name.md)
   when `wfo = TRUE`.
 
 - x:

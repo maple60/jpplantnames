@@ -1,15 +1,15 @@
-# ylistjp
+# jpplantnames
 
-`ylistjp` is an unofficial R package for looking up scientific plant
-names from Japanese plant names using the Vascular Plant Japanese Name
-Checklist ver. 1.10 published by
+`jpplantnames` is an unofficial R package for looking up scientific
+plant names from Japanese plant names using the Vascular Plant Japanese
+Name Checklist ver. 1.10 published by
 [JBIF](https://gbif.jp/activities/checklist/wamei_checklist_110/).
 
-Documentation site: <https://maple60.github.io/ylistjp/>
+Documentation site: <https://maple60.github.io/jpplantnames/>
 
 日本語で読みたい場合は [日本語
-README](https://maple60.github.io/ylistjp/README.ja.html) または
-[日本語ガイド](https://maple60.github.io/ylistjp/articles/ja-get-started.html)
+README](https://maple60.github.io/jpplantnames/README.ja.html) または
+[日本語ガイド](https://maple60.github.io/jpplantnames/articles/ja-get-started.html)
 を参照してください。
 
 ## Installation
@@ -17,14 +17,14 @@ README](https://maple60.github.io/ylistjp/README.ja.html) または
 ``` r
 
 # install.packages("pak")
-pak::pak("maple60/ylistjp")
+pak::pak("maple60/jpplantnames")
 ```
 
 ## Quick Start
 
 ``` r
 
-library(ylistjp)
+library(jpplantnames)
 
 japanese_name_info("コナラ")
 
@@ -39,10 +39,10 @@ japanese_name_search("コナラ")
 
 The first function call that needs checklist data downloads the Excel
 file into the user’s local R cache. After that,
-[`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md),
-[`japanese_name_search()`](https://maple60.github.io/ylistjp/reference/japanese_name_search.md),
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md),
+[`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md),
 and
-[`japanese_name_load()`](https://maple60.github.io/ylistjp/reference/japanese_name_load.md)
+[`japanese_name_load()`](https://maple60.github.io/jpplantnames/reference/japanese_name_load.md)
 read from the cached local file and do not query an external server for
 every lookup. To refresh the cached file intentionally:
 
@@ -52,10 +52,10 @@ japanese_name_download(overwrite = TRUE)
 japanese_name_load(refresh = TRUE)
 ```
 
-[`gbif_match()`](https://maple60.github.io/ylistjp/reference/gbif_match.md)
+[`gbif_match()`](https://maple60.github.io/jpplantnames/reference/gbif_match.md)
 is separate: it calls the GBIF API when you run it.
 
-[`japanese_name_info()`](https://maple60.github.io/ylistjp/reference/japanese_name_info.md)
+[`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
 is the recommended convenient entry point when you want a compact
 summary. By default it uses only cached checklist data. WFO and GBIF
 checks are optional and may depend on external database content and API
@@ -70,29 +70,29 @@ japanese_name_info("コナラ", wfo = TRUE, gbif = TRUE)
 ## Guides
 
 - [Usage
-  guide](https://maple60.github.io/ylistjp/articles/get-started.html)
+  guide](https://maple60.github.io/jpplantnames/articles/get-started.html)
 - [日本語:
-  使い方ガイド](https://maple60.github.io/ylistjp/articles/ja-get-started.html)
+  使い方ガイド](https://maple60.github.io/jpplantnames/articles/ja-get-started.html)
 - [Maintenance
-  guide](https://maple60.github.io/ylistjp/articles/maintenance.html)
+  guide](https://maple60.github.io/jpplantnames/articles/maintenance.html)
 - [日本語:
-  メンテナンスガイド](https://maple60.github.io/ylistjp/articles/ja-maintenance.html)
+  メンテナンスガイド](https://maple60.github.io/jpplantnames/articles/ja-maintenance.html)
 - [Package development
-  tutorial](https://maple60.github.io/ylistjp/articles/package-development.html)
+  tutorial](https://maple60.github.io/jpplantnames/articles/package-development.html)
 - [日本語:
-  パッケージ開発チュートリアル](https://maple60.github.io/ylistjp/articles/ja-package-development.html)
+  パッケージ開発チュートリアル](https://maple60.github.io/jpplantnames/articles/ja-package-development.html)
 - [Function
-  reference](https://maple60.github.io/ylistjp/reference/index.html)
+  reference](https://maple60.github.io/jpplantnames/reference/index.html)
 
 ## International Name Checks
 
 ### WFO Plant List checks
 
-[`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
 returns the checklist scientific name.
-[`wfo_suggest()`](https://maple60.github.io/ylistjp/reference/wfo_suggest.md)
+[`wfo_suggest()`](https://maple60.github.io/jpplantnames/reference/wfo_suggest.md)
 checks WFO candidate names, and
-[`wfo_accepted_name()`](https://maple60.github.io/ylistjp/reference/wfo_accepted_name.md)
+[`wfo_accepted_name()`](https://maple60.github.io/jpplantnames/reference/wfo_accepted_name.md)
 summarizes the best WFO accepted-name interpretation. These functions do
 not change checklist lookup results. WFO API use should stay
 small-scale; for larger workflows, keep caching enabled and record the
@@ -110,7 +110,7 @@ wfo_accepted_name(sci)
 
 ### GBIF checks
 
-[`gbif_match()`](https://maple60.github.io/ylistjp/reference/gbif_match.md)
+[`gbif_match()`](https://maple60.github.io/jpplantnames/reference/gbif_match.md)
 is a small optional helper around the GBIF species match API. It is
 intended for checking the scientific name returned from the checklist
 lookup against an international biodiversity data source.
@@ -137,6 +137,6 @@ The package code is MIT licensed. Checklist data is not included in the
 package and is not covered by this package’s license.
 
 The older
-[`academic_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+[`academic_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
 and `ylist_*()` function names are retained as deprecated compatibility
 wrappers.

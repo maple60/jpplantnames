@@ -1,11 +1,11 @@
 # Maintenance guide
 
-This guide is for maintainers who want to change `ylistjp` without first
-reading the whole package. It maps common maintenance goals to the files
-that usually need to be edited.
+This guide is for maintainers who want to change `jpplantnames` without
+first reading the whole package. It maps common maintenance goals to the
+files that usually need to be edited.
 
 For Japanese, see [日本語:
-メンテナンスガイド](https://maple60.github.io/ylistjp/articles/ja-maintenance.md).
+メンテナンスガイド](https://maple60.github.io/jpplantnames/articles/ja-maintenance.md).
 
 ## Project Map
 
@@ -13,8 +13,8 @@ For Japanese, see [日本語:
 |----|----|
 | Checklist download URL, cache file name, or cache location | `R/cache.R` |
 | How the checklist Excel file is parsed | `R/load.R` |
-| [`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md) behavior | `R/lookup.R`, `tests/testthat/test-lookup.R` |
-| [`japanese_name_search()`](https://maple60.github.io/ylistjp/reference/japanese_name_search.md) fields or matching rules | `R/lookup.R`, `tests/testthat/test-lookup.R` |
+| [`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md) behavior | `R/lookup.R`, `tests/testthat/test-lookup.R` |
+| [`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md) fields or matching rules | `R/lookup.R`, `tests/testthat/test-lookup.R` |
 | GBIF response fields or API behavior | `R/gbif.R`, `tests/testthat/test-gbif.R` |
 | Exported functions | `NAMESPACE`, matching `.Rd` files in `man/` |
 | Package metadata, dependencies, site URL | `DESCRIPTION` |
@@ -91,7 +91,7 @@ Change this file when:
 
 Add tests for each new search mode. Search should remain explicit and
 inspectable; avoid silently changing
-[`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
 into a fuzzy lookup.
 
 ### `gbif_match()`
@@ -105,7 +105,7 @@ Change this file when:
 - supporting another international name service.
 
 Live GBIF tests are skipped by default. Use
-`YLISTJP_RUN_NETWORK_TESTS=true` when you intentionally want to run
+`JPPLANTNAMES_RUN_NETWORK_TESTS=true` when you intentionally want to run
 network tests.
 
 ## Documentation
@@ -147,7 +147,7 @@ Build and check the package:
 
 ``` sh
 R CMD build .
-R CMD check ylistjp_0.1.0.tar.gz --no-manual
+R CMD check jpplantnames_0.1.0.tar.gz --no-manual
 ```
 
 On Windows, if Pandoc is not on `PATH`, set `RSTUDIO_PANDOC` to an
@@ -165,4 +165,4 @@ Before pushing a maintenance change:
 4.  Run `R CMD build` and `R CMD check`.
 5.  Build pkgdown locally if documentation changed.
 6.  Push and verify both GitHub Actions workflows.
-7.  Confirm the site at <https://maple60.github.io/ylistjp/>.
+7.  Confirm the site at <https://maple60.github.io/jpplantnames/>.

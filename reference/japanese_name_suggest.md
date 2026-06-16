@@ -4,7 +4,7 @@
 likely lookup rows before converting Japanese names to scientific names.
 It searches only the cached lookup Japanese-name column and does not
 change or autocorrect
-[`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
 results.
 
 ## Usage

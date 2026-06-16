@@ -1,8 +1,8 @@
-# Using ylistjp
+# Using jpplantnames
 
-`ylistjp` is an unofficial R package for looking up scientific plant
-names from Japanese plant names using the Vascular Plant Japanese Name
-Checklist ver. 1.10.
+`jpplantnames` is an unofficial R package for looking up scientific
+plant names from Japanese plant names using the Vascular Plant Japanese
+Name Checklist ver. 1.10.
 
 The checklist is useful when your starting point is a Japanese plant
 name, such as `コナラ`, and you want the corresponding scientific name
@@ -15,20 +15,20 @@ Install the package from GitHub:
 ``` r
 
 # install.packages("pak")
-pak::pak("maple60/ylistjp")
+pak::pak("maple60/jpplantnames")
 ```
 
 Then load it:
 
 ``` r
 
-library(ylistjp)
+library(jpplantnames)
 ```
 
 ## First Lookup
 
 Use
-[`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
 when you have a Japanese plant name and want the standard scientific
 name.
 
@@ -56,9 +56,9 @@ scientific_name(c("コナラ", "ミズナラ"))
 
 ## How the Data Is Loaded
 
-`ylistjp` does not bundle or redistribute checklist data. The first call
-that needs the data downloads the checklist Excel file and stores it in
-the user’s local R cache.
+`jpplantnames` does not bundle or redistribute checklist data. The first
+call that needs the data downloads the checklist Excel file and stores
+it in the user’s local R cache.
 
 You can also download or refresh the file explicitly:
 
@@ -85,7 +85,7 @@ checklist <- japanese_name_load(refresh = TRUE)
 
 ## Exact Lookup Behavior
 
-[`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
 is intentionally conservative:
 
 - it exact-matches the checklist `和名` and `別名` columns;
@@ -100,7 +100,7 @@ matching would be risky.
 ## Searching Candidates
 
 Use
-[`japanese_name_search()`](https://maple60.github.io/ylistjp/reference/japanese_name_search.md)
+[`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md)
 when you want to inspect possible matches.
 
 ``` r
@@ -109,7 +109,7 @@ japanese_name_search("コナラ")
 ```
 
 By default,
-[`japanese_name_search()`](https://maple60.github.io/ylistjp/reference/japanese_name_search.md)
+[`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md)
 searches Japanese names with partial matching. You can search specific
 fields:
 
@@ -132,10 +132,10 @@ japanese_name_search("コナラ", exact = TRUE)
 A typical workflow is:
 
 1.  Use
-    [`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+    [`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
     for names that should be standard and unambiguous.
 2.  Use
-    [`japanese_name_search()`](https://maple60.github.io/ylistjp/reference/japanese_name_search.md)
+    [`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md)
     for names that return `NA` or need manual checking.
 3.  Keep both the original Japanese name and returned scientific name in
     your analysis table.
@@ -157,7 +157,7 @@ plants
 
 ## Checking Names with GBIF
 
-[`gbif_match()`](https://maple60.github.io/ylistjp/reference/gbif_match.md)
+[`gbif_match()`](https://maple60.github.io/jpplantnames/reference/gbif_match.md)
 is a small optional helper around the GBIF species match API. Use it
 after obtaining a scientific name from the checklist when you want to
 check how the name is represented in an international biodiversity data

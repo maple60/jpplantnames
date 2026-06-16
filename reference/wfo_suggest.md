@@ -3,9 +3,9 @@
 Query the WFO Plant List GraphQL API for candidate names. This is a
 small interactive helper for checking scientific names, such as names
 returned by
-[`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
 or
-[`japanese_name_search()`](https://maple60.github.io/ylistjp/reference/japanese_name_search.md).
+[`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md).
 It does not change checklist lookup results.
 
 ## Usage

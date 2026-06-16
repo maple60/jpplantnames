@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Maintenance guide • ylistjp</title>
+<title>Maintenance guide • jpplantnames</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -18,7 +18,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="../index.html">ylistjp</a>
+    <a class="navbar-brand me-2" href="../index.html">jpplantnames</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
@@ -47,7 +47,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/maple60/ylistjp/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/maple60/jpplantnames/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -64,15 +64,16 @@
       <h1>Maintenance guide</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/maple60/ylistjp/blob/main/vignettes/maintenance.Rmd" class="external-link"><code>vignettes/maintenance.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/maple60/jpplantnames/blob/main/vignettes/maintenance.Rmd" class="external-link"><code>vignettes/maintenance.Rmd</code></a></small>
       <div class="d-none name"><code>maintenance.Rmd</code></div>
     </div>
 
     
     
-<p>This guide is for maintainers who want to change <code>ylistjp</code>
-without first reading the whole package. It maps common maintenance
-goals to the files that usually need to be edited.</p>
+<p>This guide is for maintainers who want to change
+<code>jpplantnames</code> without first reading the whole package. It
+maps common maintenance goals to the files that usually need to be
+edited.</p>
 <p>For Japanese, see <a href="ja-maintenance.html">日本語:
 メンテナンスガイド</a>.</p>
 <div class="section level2">
@@ -260,8 +261,8 @@ a fuzzy lookup.</p>
 <li>supporting another international name service.</li>
 </ul>
 <p>Live GBIF tests are skipped by default. Use
-<code>YLISTJP_RUN_NETWORK_TESTS=true</code> when you intentionally want
-to run network tests.</p>
+<code>JPPLANTNAMES_RUN_NETWORK_TESTS=true</code> when you intentionally
+want to run network tests.</p>
 </div>
 </div>
 <div class="section level2">
@@ -309,7 +310,7 @@ possible:</p>
 <code class="sourceCode R"><span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_package.html" class="external-link">test_local</a></span><span class="op">(</span><span class="st">"."</span>, reporter <span class="op">=</span> <span class="st">"summary"</span><span class="op">)</span></span></code></pre></div>
 <p>Build and check the package:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">R</span> CMD build .</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="ex">R</span> CMD check ylistjp_0.1.0.tar.gz <span class="at">--no-manual</span></span></code></pre></div>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="ex">R</span> CMD check jpplantnames_0.1.0.tar.gz <span class="at">--no-manual</span></span></code></pre></div>
 <p>On Windows, if Pandoc is not on <code>PATH</code>, set
 <code>RSTUDIO_PANDOC</code> to an installed Pandoc directory before
 building vignettes or pkgdown.</p>
@@ -326,7 +327,7 @@ changes.</li>
 <li>Run <code>R CMD build</code> and <code>R CMD check</code>.</li>
 <li>Build pkgdown locally if documentation changed.</li>
 <li>Push and verify both GitHub Actions workflows.</li>
-<li>Confirm the site at <a href="https://maple60.github.io/ylistjp/" class="uri">https://maple60.github.io/ylistjp/</a>.</li>
+<li>Confirm the site at <a href="https://maple60.github.io/jpplantnames/" class="uri">https://maple60.github.io/jpplantnames/</a>.</li>
 </ol>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -336,7 +337,7 @@ changes.</li>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by ylistjp contributors.</p>
+  <p>Developed by jpplantnames contributors.</p>
 </div>
 
 <div class="pkgdown-footer-right">

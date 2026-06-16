@@ -1,12 +1,12 @@
-# ylistjp パッケージ開発チュートリアル
+# jpplantnames パッケージ開発チュートリアル
 
-この記事では、`ylistjp` が小さな R
+この記事では、`jpplantnames` が小さな R
 パッケージとしてどのように構成されているかを
 説明します。公開データを、再現可能な解析用の道具に変える例として読むことを
 想定しています。
 
-English version: [Building ylistjp as an R
-package](https://maple60.github.io/ylistjp/articles/package-development.md)
+English version: [Building jpplantnames as an R
+package](https://maple60.github.io/jpplantnames/articles/package-development.md)
 
 ## 小さな課題から始める
 
@@ -34,7 +34,8 @@ scientific_name("コナラ")
 
 ## パッケージの骨格
 
-`ylistjp` は、多くの R パッケージで使われる標準的な構成を使っています。
+`jpplantnames` は、多くの R
+パッケージで使われる標準的な構成を使っています。
 
 | パス | このパッケージでの役割 |
 |----|----|
@@ -57,7 +58,7 @@ scientific_name("コナラ")
 
 ``` r
 
-library(ylistjp)
+library(jpplantnames)
 
 scientific_name("コナラ")
 scientific_name("コナラ", with_author = TRUE)
@@ -68,26 +69,26 @@ japanese_name_search("コナラ")
 
 | 関数 | 役割 |
 |----|----|
-| [`japanese_name_download()`](https://maple60.github.io/ylistjp/reference/japanese_name_download.md) | チェックリスト Excel ファイルをユーザーキャッシュへ保存する。 |
-| [`japanese_name_load()`](https://maple60.github.io/ylistjp/reference/japanese_name_load.md) | キャッシュ済みファイルを `data.frame` として読み込む。 |
-| [`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md) | 和名の完全一致から標準学名を返す。 |
-| [`japanese_name_search()`](https://maple60.github.io/ylistjp/reference/japanese_name_search.md) | 候補行を返し、人間が確認できるようにする。 |
-| [`gbif_match()`](https://maple60.github.io/ylistjp/reference/gbif_match.md) | 学名を GBIF と照合する任意の補助関数。 |
+| [`japanese_name_download()`](https://maple60.github.io/jpplantnames/reference/japanese_name_download.md) | チェックリスト Excel ファイルをユーザーキャッシュへ保存する。 |
+| [`japanese_name_load()`](https://maple60.github.io/jpplantnames/reference/japanese_name_load.md) | キャッシュ済みファイルを `data.frame` として読み込む。 |
+| [`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md) | 和名の完全一致から標準学名を返す。 |
+| [`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md) | 候補行を返し、人間が確認できるようにする。 |
+| [`gbif_match()`](https://maple60.github.io/jpplantnames/reference/gbif_match.md) | 学名を GBIF と照合する任意の補助関数。 |
 
 この分け方にすると、簡単な用途は
-[`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
 だけで済み、必要な人は 元データや候補行も確認できます。
 
 ## チェックリストデータをパッケージに同梱しない
 
-`ylistjp`
+`jpplantnames`
 はチェックリストデータをパッケージ内に入れていません。データの流れは
 次の通りです。
 
-1.  [`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)、[`japanese_name_search()`](https://maple60.github.io/ylistjp/reference/japanese_name_search.md)、[`japanese_name_load()`](https://maple60.github.io/ylistjp/reference/japanese_name_load.md)
+1.  [`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)、[`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md)、[`japanese_name_load()`](https://maple60.github.io/jpplantnames/reference/japanese_name_load.md)
     がチェックリストデータを必要とする。
 2.  キャッシュがなければ
-    [`japanese_name_download()`](https://maple60.github.io/ylistjp/reference/japanese_name_download.md)
+    [`japanese_name_download()`](https://maple60.github.io/jpplantnames/reference/japanese_name_download.md)
     がチェックリスト Excel ファイルを取得する。
 3.  ファイルをユーザーの R キャッシュディレクトリに保存する。
 4.  以後の検索ではチェックリスト配布元ではなくローカルファイルを読む。
@@ -127,7 +128,7 @@ Unicode escape で保持しています。
 
 ## 検索は保守的にする
 
-[`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
 は fuzzy search ではなく、解析で安定して使うための関数です。
 現在の仕様は意図的に狭くしています。
 
@@ -138,7 +139,7 @@ Unicode escape で保持しています。
 
 これにより、疑わしい候補をスクリプトが静かに採用することを避けます。
 曖昧な場合は
-[`japanese_name_search()`](https://maple60.github.io/ylistjp/reference/japanese_name_search.md)
+[`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md)
 で候補を確認します。
 
 ## テストでは小さな fixture を使う
@@ -177,23 +178,23 @@ GitHub Actions で pkgdown を実行し、生成されたサイトを GitHub Pag
 次の機能を足す場合も、保守的な既定動作を保つのが安全です。
 
 - ひらがな・カタカナ変換や全角・半角の正規化を明示的に追加する。
-- [`japanese_name_search()`](https://maple60.github.io/ylistjp/reference/japanese_name_search.md)
+- [`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md)
   に候補ランキングを追加する。
 - WFO や Catalogue of Life などの任意チェック関数を追加する。
 - 監査用にチェックリストの追加メタデータを返せるようにする。
-- [`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+- [`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
   の結果をデータフレームに結合する実例記事を追加する。
 
 探索的な機能は
-[`japanese_name_search()`](https://maple60.github.io/ylistjp/reference/japanese_name_search.md)
-や補助関数に寄せ、[`scientific_name()`](https://maple60.github.io/ylistjp/reference/scientific_name.md)
+[`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md)
+や補助関数に寄せ、[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
 はスクリプトで 予測しやすい挙動のままにしておくのが基本方針です。
 
 ## 次に読むもの
 
-- [使い方ガイド](https://maple60.github.io/ylistjp/articles/ja-get-started.md):
+- [使い方ガイド](https://maple60.github.io/jpplantnames/articles/ja-get-started.md):
   パッケージの使い方。
-- [メンテナンスガイド](https://maple60.github.io/ylistjp/articles/ja-maintenance.md):
+- [メンテナンスガイド](https://maple60.github.io/jpplantnames/articles/ja-maintenance.md):
   何を変えたいときにどのファイルを見るか。
-- [関数リファレンス](https://maple60.github.io/ylistjp/reference/index.md):
+- [関数リファレンス](https://maple60.github.io/jpplantnames/reference/index.md):
   公開関数ごとの説明。
