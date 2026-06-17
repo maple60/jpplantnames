@@ -22,8 +22,10 @@
 #'   `wfo = TRUE`.
 #'
 #' @return A named list with class `"japanese_name_info"` containing `query`,
-#'   `summary`, `japanese_name`, `wfo`, and `gbif`. The deprecated `ylist`
-#'   element is retained as a compatibility alias for checklist candidate rows.
+#'   `summary`, `japanese_name`, `wfo`, and `gbif`. The `summary` data frame
+#'   includes the preferred checklist scientific name, family name, Japanese
+#'   family name, and genus name where available. The deprecated `ylist` element
+#'   is retained as a compatibility alias for checklist candidate rows.
 #' @export
 #'
 #' @examples
@@ -91,11 +93,25 @@ japanese_name_info <- function(name,
       preferred <- rows[preferred_index, , drop = FALSE]
 
       summary$matched[[i]] <- TRUE
-      summary$japanese_name[[i]] <- japanese_name_info_cell(preferred, col_japanese_name)
-      summary$scientific_name[[i]] <- japanese_name_info_cell(preferred, col_scientific_name)
+      summary$japanese_name[[i]] <- japanese_name_info_cell(
+        preferred,
+        col_japanese_name
+      )
+      summary$scientific_name[[i]] <- japanese_name_info_cell(
+        preferred,
+        col_scientific_name
+      )
       summary$scientific_name_with_author[[i]] <- japanese_name_info_cell(
         preferred,
         col_scientific_name_author
+      )
+      summary$family_name[[i]] <- japanese_name_info_cell(preferred, "Family name")
+      summary$family_name_jp[[i]] <- japanese_name_info_cell(
+        preferred,
+        "Family name (JP)"
+      )
+      summary$genus_name[[i]] <- japanese_name_info_genus_name(
+        summary$scientific_name[[i]]
       )
       summary$match_status[[i]] <- "matched"
     } else if (length(standard_indices) > 1L) {
@@ -287,6 +303,9 @@ japanese_name_info_empty_summary <- function(name) {
     japanese_name = rep(NA_character_, n),
     scientific_name = rep(NA_character_, n),
     scientific_name_with_author = rep(NA_character_, n),
+    family_name = rep(NA_character_, n),
+    family_name_jp = rep(NA_character_, n),
+    genus_name = rep(NA_character_, n),
     n_japanese_name_candidates = rep(0L, n),
     match_status = rep(NA_character_, n),
     wfo_accepted_name = rep(NA_character_, n),
@@ -355,6 +374,32 @@ japanese_name_info_cell <- function(row, column) {
   }
 
   as.character(value)
+}
+
+japanese_name_info_genus_name <- function(scientific_name) {
+  if (length(scientific_name) == 0L) {
+    return(NA_character_)
+  }
+
+  scientific_name <- scientific_name[[1]]
+  if (is.na(scientific_name)) {
+    return(NA_character_)
+  }
+
+  value <- trimws(scientific_name)
+  if (identical(value, "")) {
+    return(NA_character_)
+  }
+
+  parts <- strsplit(value, "[[:space:]]+", perl = TRUE)[[1]]
+  if (length(parts) == 0L) {
+    return(NA_character_)
+  }
+  if (parts[[1]] %in% c("\u00d7", "x", "X") && length(parts) > 1L) {
+    return(parts[[2]])
+  }
+
+  parts[[1]]
 }
 
 japanese_name_info_call_wfo <- function(scientific_name,

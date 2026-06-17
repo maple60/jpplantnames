@@ -67,7 +67,8 @@ scientific name.}
 A named list with class \code{"japanese_name_info"} containing:
 \itemize{
 \item \code{query}: the original input vector.
-\item \code{summary}: one summary row per input name.
+\item \code{summary}: one summary row per input name, including preferred
+checklist scientific, family, Japanese family, and genus names where available.
 \item \code{japanese_name}: checklist candidate rows with input metadata.
 \item \code{ylist}: deprecated compatibility alias for \code{japanese_name}.
 \item \code{wfo}: WFO accepted-name rows, or \code{NULL}.

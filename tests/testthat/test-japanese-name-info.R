@@ -15,6 +15,9 @@ test_that("japanese_name_info returns a scalar summary and keeps checklist candi
       result$summary$scientific_name_with_author[[1]],
       "Quercus serrata Murray"
     )
+    expect_equal(result$summary$family_name[[1]], "Fagaceae")
+    expect_equal(result$summary$family_name_jp[[1]], "\u30d6\u30ca")
+    expect_equal(result$summary$genus_name[[1]], "Quercus")
     expect_equal(result$summary$n_japanese_name_candidates[[1]], 4L)
     expect_equal(result$summary$match_status[[1]], "matched")
     expect_equal(nrow(result$japanese_name), 4L)
@@ -35,6 +38,18 @@ test_that("japanese_name_info preserves vector input order and length", {
     expect_equal(
       result$summary$scientific_name,
       c("Quercus serrata", "Quercus crispula", NA_character_)
+    )
+    expect_equal(
+      result$summary$family_name,
+      c("Fagaceae", "Fagaceae", NA_character_)
+    )
+    expect_equal(
+      result$summary$family_name_jp,
+      c("\u30d6\u30ca", "\u30d6\u30ca", NA_character_)
+    )
+    expect_equal(
+      result$summary$genus_name,
+      c("Quercus", "Quercus", NA_character_)
     )
     expect_equal(
       result$summary$match_status,
