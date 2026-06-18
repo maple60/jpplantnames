@@ -8,6 +8,11 @@
 #'   loading.
 #'
 #' @return A data frame containing normalized checklist rows.
+#'
+#' @details
+#' `ylist_load()` is retained as a deprecated compatibility wrapper.
+#' Use `japanese_name_load()` for new code.
+#'
 #' @export
 japanese_name_load <- function(refresh = FALSE) {
   if (!isTRUE(refresh) && !identical(refresh, FALSE)) {
@@ -22,6 +27,7 @@ japanese_name_load <- function(refresh = FALSE) {
   read_checklist(path)
 }
 
+#' @rdname japanese_name_load
 #' @export
 ylist_load <- function(refresh = FALSE) {
   .Deprecated("japanese_name_load")

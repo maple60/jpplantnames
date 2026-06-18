@@ -30,11 +30,17 @@ is_probably_url <- function(x) {
 #' @param overwrite Logical. If `FALSE`, an existing cached file is reused.
 #'
 #' @return The path to the cached file, invisibly.
+#'
+#' @details
+#' `ylist_download()` is retained as a deprecated compatibility wrapper.
+#' Use `japanese_name_download()` for new code.
+#'
 #' @export
 japanese_name_download <- function(overwrite = FALSE) {
   checklist_download(overwrite = overwrite)
 }
 
+#' @rdname japanese_name_download
 #' @export
 ylist_download <- function(overwrite = FALSE) {
   .Deprecated("japanese_name_download")

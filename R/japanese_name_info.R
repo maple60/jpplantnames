@@ -21,11 +21,27 @@
 #' @param ... Additional arguments passed to [wfo_accepted_name()] when
 #'   `wfo = TRUE`.
 #'
-#' @return A named list with class `"japanese_name_info"` containing `query`,
-#'   `summary`, `japanese_name`, `wfo`, and `gbif`. The `summary` data frame
-#'   includes the preferred checklist scientific name, family name, Japanese
-#'   family name, and genus name where available. The deprecated `ylist` element
-#'   is retained as a compatibility alias for checklist candidate rows.
+#' @return A named list with class `"japanese_name_info"` containing:
+#' \itemize{
+#' \item `query`: the original input vector.
+#' \item `summary`: one summary row per input name, including preferred
+#'   checklist scientific, family, Japanese family, and genus names where
+#'   available.
+#' \item `japanese_name`: checklist candidate rows with input metadata.
+#' \item `ylist`: deprecated compatibility alias for `japanese_name`.
+#' \item `wfo`: WFO accepted-name rows, or `NULL`.
+#' \item `gbif`: GBIF match rows, or `NULL`.
+#' }
+#'
+#' @details
+#' The summary keeps the preferred checklist match separate from optional WFO and
+#' GBIF checks. Alternative checklist candidate rows are kept in
+#' `x$japanese_name`; `x$ylist` is retained as a deprecated compatibility alias.
+#' WFO and GBIF results do not overwrite checklist names.
+#'
+#' `ylist_info()` is retained as a deprecated compatibility wrapper.
+#' Use `japanese_name_info()` for new code.
+#'
 #' @export
 #'
 #' @examples
@@ -206,6 +222,7 @@ japanese_name_info <- function(name,
   result
 }
 
+#' @rdname japanese_name_info
 #' @export
 ylist_info <- function(name,
                        with_author = TRUE,
@@ -232,6 +249,8 @@ ylist_info <- function(name,
   )
 }
 
+#' @param x A `japanese_name_info` object.
+#' @rdname japanese_name_info
 #' @export
 print.japanese_name_info <- function(x, ...) {
   summary <- x$summary
@@ -292,6 +311,7 @@ print.japanese_name_info <- function(x, ...) {
   invisible(x)
 }
 
+#' @rdname japanese_name_info
 #' @export
 print.ylist_info <- print.japanese_name_info
 

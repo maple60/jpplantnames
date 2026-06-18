@@ -32,17 +32,23 @@ check_japanese_name_columns <- function(data, required = required_japanese_name_
 #' scientific name.
 #'
 #' @param name Character vector of Japanese plant names.
-#' @param with_author Logical. If `TRUE`, include the name author.
+#' @param with_author Logical. If `TRUE`, return `学名 withAuthor`;
+#'   otherwise return `学名`.
 #'
 #' @return A character vector with one result per input name. Missing names
 #'   return `NA_character_`.
+#'
+#' @details
+#' `academic_name()` is retained as a deprecated compatibility wrapper.
+#' Use `scientific_name()` for new code.
+#'
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' scientific_name("コナラ")
 #' #> [1] "Quercus serrata"
-#' 
+#'
 #' scientific_name("コナラ", with_author = TRUE)
 #' #> [1] "Quercus serrata Murray"
 #' }
@@ -78,6 +84,7 @@ scientific_name <- function(name, with_author = FALSE) {
   )
 }
 
+#' @rdname scientific_name
 #' @export
 academic_name <- function(name, with_author = FALSE) {
   .Deprecated("scientific_name")
@@ -134,6 +141,11 @@ lookup_one_scientific_name <- function(name, data, column) {
 #'   fixed-string matching.
 #'
 #' @return A data frame of matching lookup rows.
+#'
+#' @details
+#' `ylist_search()` is retained as a deprecated compatibility wrapper.
+#' Use `japanese_name_search()` for new code.
+#'
 #' @export
 japanese_name_search <- function(query, field = c("japanese", "scientific", "alias", "all"), exact = FALSE) {
   if (!is.character(query) || length(query) != 1 || is.na(query)) {
@@ -170,6 +182,7 @@ japanese_name_search <- function(query, field = c("japanese", "scientific", "ali
   result
 }
 
+#' @rdname japanese_name_search
 #' @export
 ylist_search <- function(query, field = c("japanese", "scientific", "alias", "all"), exact = FALSE) {
   .Deprecated("japanese_name_search")
@@ -200,6 +213,11 @@ match_japanese_name_column <- function(values, query, exact) {
 #'
 #' @return A data frame containing lookup rows plus `query`, `matched_value`,
 #'   `distance`, `score`, and `match_type`.
+#'
+#' @details
+#' `ylist_suggest()` is retained as a deprecated compatibility wrapper.
+#' Use `japanese_name_suggest()` for new code.
+#'
 #' @export
 #'
 #' @examples
@@ -293,6 +311,7 @@ japanese_name_suggest <- function(query, n = 10, max_distance = NULL) {
   result
 }
 
+#' @rdname japanese_name_suggest
 #' @export
 ylist_suggest <- function(query, n = 10, max_distance = NULL) {
   .Deprecated("japanese_name_suggest")
