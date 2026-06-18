@@ -88,19 +88,22 @@
 </ul></div>
 <div class="section level2">
 <h2 id="国際的な学名確認">国際的な学名確認<a class="anchor" aria-label="anchor" href="#%E5%9B%BD%E9%9A%9B%E7%9A%84%E3%81%AA%E5%AD%A6%E5%90%8D%E7%A2%BA%E8%AA%8D"></a></h2>
-<p><code><a href="reference/gbif_match.html">gbif_match()</a></code> は GBIF species match API を呼び出す薄い補助関数です。 チェックリストから得た学名を国際的な生物多様性データソースで確認したい場合に使います。</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/gbif_match.html">gbif_match</a></span><span class="op">(</span><span class="st">"Quercus serrata"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
-<h3 id="wfo-plant-list-checks">WFO Plant List checks<a class="anchor" aria-label="anchor" href="#wfo-plant-list-checks"></a></h3>
+<h3 id="wfo-plant-list-による確認">WFO Plant List による確認<a class="anchor" aria-label="anchor" href="#wfo-plant-list-%E3%81%AB%E3%82%88%E3%82%8B%E7%A2%BA%E8%AA%8D"></a></h3>
 <p><code><a href="reference/scientific_name.html">scientific_name()</a></code> はチェックリストの学名を返します。<code><a href="reference/wfo_suggest.html">wfo_suggest()</a></code> は WFO の候補名を確認し、 <code><a href="reference/wfo_accepted_name.html">wfo_accepted_name()</a></code> は WFO 上での採用名の解釈を 1 行にまとめます。これらの関数は チェックリストの結果を自動で置き換えません。WFO API は小規模な対話的確認に使い、大きな処理では キャッシュを使い、使った WFO のリリースやバージョンを記録してください。</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sci</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/scientific_name.html">scientific_name</a></span><span class="op">(</span><span class="st">"コナラ"</span><span class="op">)</span></span>
 <span><span class="va">sci</span></span>
 <span><span class="co">#&gt; [1] "Quercus serrata"</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/wfo_suggest.html">wfo_suggest</a></span><span class="op">(</span><span class="va">sci</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/wfo_accepted_name.html">wfo_accepted_name</a></span><span class="op">(</span><span class="va">sci</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="gbif-による確認">GBIF による確認<a class="anchor" aria-label="anchor" href="#gbif-%E3%81%AB%E3%82%88%E3%82%8B%E7%A2%BA%E8%AA%8D"></a></h3>
+<p><code><a href="reference/gbif_match.html">gbif_match()</a></code> は GBIF species match API を呼び出す小さな任意の補助関数です。 チェックリストから得た学名を国際的な生物多様性データソースで確認したい場合に使います。</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/gbif_match.html">gbif_match</a></span><span class="op">(</span><span class="st">"Quercus serrata"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">

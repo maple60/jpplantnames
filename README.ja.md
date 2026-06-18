@@ -82,16 +82,7 @@ japanese_name_info("コナラ", wfo = TRUE, gbif = TRUE)
 
 ## 国際的な学名確認
 
-[`gbif_match()`](https://maple60.github.io/jpplantnames/reference/gbif_match.md)
-は GBIF species match API を呼び出す薄い補助関数です。
-チェックリストから得た学名を国際的な生物多様性データソースで確認したい場合に使います。
-
-``` r
-
-gbif_match("Quercus serrata")
-```
-
-### WFO Plant List checks
+### WFO Plant List による確認
 
 [`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
 はチェックリストの学名を返します。[`wfo_suggest()`](https://maple60.github.io/jpplantnames/reference/wfo_suggest.md)
@@ -110,6 +101,17 @@ sci
 
 wfo_suggest(sci)
 wfo_accepted_name(sci)
+```
+
+### GBIF による確認
+
+[`gbif_match()`](https://maple60.github.io/jpplantnames/reference/gbif_match.md)
+は GBIF species match API を呼び出す小さな任意の補助関数です。
+チェックリストから得た学名を国際的な生物多様性データソースで確認したい場合に使います。
+
+``` r
+
+gbif_match("Quercus serrata")
 ```
 
 ## データソースと引用
