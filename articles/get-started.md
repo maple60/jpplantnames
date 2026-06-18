@@ -54,11 +54,33 @@ The function is vectorized:
 scientific_name(c("コナラ", "ミズナラ"))
 ```
 
+If you want a compact summary from a Japanese name, use
+[`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
+as a convenient entry point.
+
+``` r
+
+japanese_name_info("コナラ")
+```
+
+By default,
+[`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
+uses only the cached checklist data. It does not call WFO or GBIF unless
+you ask for those optional checks.
+
 ## How the Data Is Loaded
 
 `jpplantnames` does not bundle or redistribute checklist data. The first
 call that needs the data downloads the checklist Excel file and stores
 it in the user’s local R cache.
+
+After the checklist has been cached, the standard lookup helpers read
+from that local file. Routine calls such as
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md),
+[`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md),
+and the default
+[`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
+do not query an external server for every lookup.
 
 You can also download or refresh the file explicitly:
 
@@ -155,7 +177,22 @@ plants$scientific_name <- scientific_name(plants$japanese_name)
 plants
 ```
 
-## Checking Names with GBIF
+## Optional WFO and GBIF Checks
+
+The checklist name is the package’s lookup result.
+[`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
+can also run optional checks against international name sources:
+
+``` r
+
+japanese_name_info("コナラ", wfo = TRUE)
+japanese_name_info("コナラ", wfo = TRUE, gbif = TRUE)
+```
+
+These `wfo = TRUE` and `gbif = TRUE` checks depend on external API
+availability and the content of those databases. WFO results are
+reported as external interpretations; they do not automatically replace
+the scientific name returned from the checklist.
 
 [`gbif_match()`](https://maple60.github.io/jpplantnames/reference/gbif_match.md)
 is a small optional helper around the GBIF species match API. Use it

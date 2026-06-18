@@ -105,28 +105,35 @@
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/scientific_name.html">scientific_name</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"コナラ"</span>, <span class="st">"ミズナラ"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
+<p>和名から情報をまとめて確認したい場合は、便利な入口として <code><a href="../reference/japanese_name_info.html">japanese_name_info()</a></code> を使えます。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/japanese_name_info.html">japanese_name_info</a></span><span class="op">(</span><span class="st">"コナラ"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>既定では、<code><a href="../reference/japanese_name_info.html">japanese_name_info()</a></code> はキャッシュ済みのチェックリストデータだけを使います。 WFO や GBIF への任意チェックは、明示的に指定した場合だけ実行されます。</p>
 </section><section class="level2"><h2 id="チェックリストデータの取得とキャッシュ">チェックリストデータの取得とキャッシュ<a class="anchor" aria-label="anchor" href="#%E3%83%81%E3%82%A7%E3%83%83%E3%82%AF%E3%83%AA%E3%82%B9%E3%83%88%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%8F%96%E5%BE%97%E3%81%A8%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B7%E3%83%A5"></a>
 </h2>
 <p><code>jpplantnames</code> はチェックリストデータをパッケージ内に同梱しません。最初にデータが必要に なった時点で、チェックリストの Excel ファイルをユーザーの R キャッシュへ ダウンロードして読み込みます。</p>
+<p>いったんキャッシュされた後は、標準的な検索関数はローカルファイルを読みます。 <code><a href="../reference/scientific_name.html">scientific_name()</a></code>、<code><a href="../reference/japanese_name_search.html">japanese_name_search()</a></code>、既定の <code><a href="../reference/japanese_name_info.html">japanese_name_info()</a></code> は、 検索のたびに外部サーバーへ問い合わせるわけではありません。</p>
 <p>明示的にダウンロードしたい場合は次のようにします。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/japanese_name_download.html">japanese_name_download</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>既存のキャッシュを更新したい場合は <code>overwrite = TRUE</code> を使います。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/japanese_name_download.html">japanese_name_download</a></span><span class="op">(</span>overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>データ全体を <code>data.frame</code> として読み込みたい場合は <code><a href="../reference/japanese_name_load.html">japanese_name_load()</a></code> を使います。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">checklist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/japanese_name_load.html">japanese_name_load</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">checklist</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>読み込み前に必ず再取得したい場合は <code>refresh = TRUE</code> を指定します。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">checklist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/japanese_name_load.html">japanese_name_load</a></span><span class="op">(</span>refresh <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="scientific_name-の考え方">
@@ -145,12 +152,12 @@
 </h2>
 <p>部分一致や別名も含めて候補を確認したい場合は <code><a href="../reference/japanese_name_search.html">japanese_name_search()</a></code> を使います。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/japanese_name_search.html">japanese_name_search</a></span><span class="op">(</span><span class="st">"コナラ"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>検索対象の列を指定できます。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 学名から検索</span></span>
 <span><span class="fu"><a href="../reference/japanese_name_search.html">japanese_name_search</a></span><span class="op">(</span><span class="st">"Quercus serrata"</span>, field <span class="op">=</span> <span class="st">"scientific"</span><span class="op">)</span></span>
 <span></span>
@@ -162,7 +169,7 @@
 </div>
 <p>完全一致で候補を確認したい場合は <code>exact = TRUE</code> を指定します。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/japanese_name_search.html">japanese_name_search</a></span><span class="op">(</span><span class="st">"コナラ"</span>, exact <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="実用的なワークフロー">実用的なワークフロー<a class="anchor" aria-label="anchor" href="#%E5%AE%9F%E7%94%A8%E7%9A%84%E3%81%AA%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%95%E3%83%AD%E3%83%BC"></a>
@@ -177,7 +184,7 @@
 </ol>
 <p>例:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plants</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  japanese_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"コナラ"</span>, <span class="st">"ミズナラ"</span>, <span class="st">"存在しない植物名"</span><span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -186,11 +193,18 @@
 <span><span class="va">plants</span><span class="op">$</span><span class="va">scientific_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scientific_name.html">scientific_name</a></span><span class="op">(</span><span class="va">plants</span><span class="op">$</span><span class="va">japanese_name</span><span class="op">)</span></span>
 <span><span class="va">plants</span></span></code></pre></div>
 </div>
-</section><section class="level2"><h2 id="gbif-で国際的な学名情報を確認する">GBIF で国際的な学名情報を確認する<a class="anchor" aria-label="anchor" href="#gbif-%E3%81%A7%E5%9B%BD%E9%9A%9B%E7%9A%84%E3%81%AA%E5%AD%A6%E5%90%8D%E6%83%85%E5%A0%B1%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B"></a>
+</section><section class="level2"><h2 id="wfo-と-gbif-で任意確認する">WFO と GBIF で任意確認する<a class="anchor" aria-label="anchor" href="#wfo-%E3%81%A8-gbif-%E3%81%A7%E4%BB%BB%E6%84%8F%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B"></a>
 </h2>
+<p>チェックリストの学名が、このパッケージの lookup result です。 <code><a href="../reference/japanese_name_info.html">japanese_name_info()</a></code> では、国際的な学名データソースとの任意チェックも実行できます。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/japanese_name_info.html">japanese_name_info</a></span><span class="op">(</span><span class="st">"コナラ"</span>, wfo <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/japanese_name_info.html">japanese_name_info</a></span><span class="op">(</span><span class="st">"コナラ"</span>, wfo <span class="op">=</span> <span class="cn">TRUE</span>, gbif <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p><code>wfo = TRUE</code> や <code>gbif = TRUE</code> の確認は、外部 API の利用可否と外部データベースの内容に依存します。 WFO の結果は外部データソースでの解釈として表示され、チェックリストから得た学名を自動で 置き換えるものではありません。</p>
 <p>チェックリストから得た学名を国際的なデータベースと照合したい場合は、 <code><a href="../reference/gbif_match.html">gbif_match()</a></code> を使えます。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/gbif_match.html">gbif_match</a></span><span class="op">(</span><span class="st">"Quercus serrata"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>これは GBIF species match API を呼び出す薄い補助関数です。利用には <code>jsonlite</code> パッケージが必要です。</p>

@@ -50,12 +50,30 @@ scientific_name("コナラ", with_author = TRUE)
 scientific_name(c("コナラ", "ミズナラ"))
 ```
 
+和名から情報をまとめて確認したい場合は、便利な入口として
+[`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
+を使えます。
+
+``` r
+
+japanese_name_info("コナラ")
+```
+
+既定では、[`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
+はキャッシュ済みのチェックリストデータだけを使います。 WFO や GBIF
+への任意チェックは、明示的に指定した場合だけ実行されます。
+
 ## チェックリストデータの取得とキャッシュ
 
 `jpplantnames`
 はチェックリストデータをパッケージ内に同梱しません。最初にデータが必要に
 なった時点で、チェックリストの Excel ファイルをユーザーの R キャッシュへ
 ダウンロードして読み込みます。
+
+いったんキャッシュされた後は、標準的な検索関数はローカルファイルを読みます。
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)、[`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md)、既定の
+[`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
+は、 検索のたびに外部サーバーへ問い合わせるわけではありません。
 
 明示的にダウンロードしたい場合は次のようにします。
 
@@ -159,7 +177,22 @@ plants$scientific_name <- scientific_name(plants$japanese_name)
 plants
 ```
 
-## GBIF で国際的な学名情報を確認する
+## WFO と GBIF で任意確認する
+
+チェックリストの学名が、このパッケージの lookup result です。
+[`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
+では、国際的な学名データソースとの任意チェックも実行できます。
+
+``` r
+
+japanese_name_info("コナラ", wfo = TRUE)
+japanese_name_info("コナラ", wfo = TRUE, gbif = TRUE)
+```
+
+`wfo = TRUE` や `gbif = TRUE` の確認は、外部 API
+の利用可否と外部データベースの内容に依存します。 WFO
+の結果は外部データソースでの解釈として表示され、チェックリストから得た学名を自動で
+置き換えるものではありません。
 
 チェックリストから得た学名を国際的なデータベースと照合したい場合は、
 [`gbif_match()`](https://maple60.github.io/jpplantnames/reference/gbif_match.md)
