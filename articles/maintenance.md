@@ -15,6 +15,9 @@ For Japanese, see [日本語:
 | How the checklist Excel file is parsed | `R/load.R` |
 | [`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md) behavior | `R/lookup.R`, `tests/testthat/test-lookup.R` |
 | [`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md) fields or matching rules | `R/lookup.R`, `tests/testthat/test-lookup.R` |
+| [`japanese_name_suggest()`](https://maple60.github.io/jpplantnames/reference/japanese_name_suggest.md) normalization, ranking, or fuzzy matching | `R/lookup.R`, `tests/testthat/test-japanese-name-suggest.R` |
+| [`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md) summary fields or optional WFO/GBIF aggregation | `R/japanese_name_info.R`, `tests/testthat/test-japanese-name-info.R` |
+| WFO response fields, accepted-name behavior, or response cache | `R/wfo.R`, `tests/testthat/test-wfo.R` |
 | GBIF response fields or API behavior | `R/gbif.R`, `tests/testthat/test-gbif.R` |
 | Exported functions | roxygen comments in `R/*.R`; regenerate `NAMESPACE` and `man/*.Rd` |
 | Package metadata, dependencies, site URL | `DESCRIPTION` |
@@ -94,6 +97,72 @@ inspectable; avoid silently changing
 [`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
 into a fuzzy lookup.
 
+### `japanese_name_suggest()`
+
+Implemented in `R/lookup.R`.
+
+Change this file when:
+
+- Japanese-name normalization changes;
+- exact, partial, or fuzzy-match ordering changes;
+- default `max_distance`, scoring, or candidate ranking changes;
+- optional `stringi` or `stringdist` behavior changes;
+- return metadata columns such as `matched_value`, `distance`, `score`,
+  or `match_type` change.
+
+This helper searches only the cached Japanese-name column. It is for
+suggesting candidate checklist rows, not for autocorrecting
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md).
+Keep
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
+exact and conservative. Tests live in
+`tests/testthat/test-japanese-name-suggest.R`.
+
+### `japanese_name_info()`
+
+Implemented in `R/japanese_name_info.R`.
+
+Change this file when:
+
+- summary columns or print output change;
+- the preferred checklist candidate rule changes;
+- optional WFO or GBIF integration changes;
+- external API failures should be summarized differently;
+- the deprecated
+  [`ylist_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
+  compatibility wrapper changes.
+
+By default,
+[`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
+uses only cached checklist data. It calls WFO only with `wfo = TRUE` and
+GBIF only with `gbif = TRUE`. WFO and GBIF results are stored alongside
+the checklist summary and do not overwrite checklist names. External API
+failures should warn and return error-status rows instead of failing the
+whole info call. Tests live in
+`tests/testthat/test-japanese-name-info.R`.
+
+### `wfo_suggest()` and `wfo_accepted_name()`
+
+Implemented in `R/wfo.R`.
+
+Change this file when:
+
+- the WFO GraphQL endpoint, query, or returned fields change;
+- accepted-name summarization, rank preference, or `with_author`
+  behavior changes;
+- WFO cache file naming, cache directory policy, or cache read/write
+  behavior changes;
+- `backend = "local"` is implemented.
+
+WFO access is an optional, small-scale external API check. With
+`cache = TRUE`, raw API responses are cached locally; `refresh = TRUE`
+ignores an existing cache file and fetches again. The default cache
+directory is `tools::R_user_dir("jpplantnames", which = "cache")/wfo`,
+unless `options(jpplantnames.wfo_cache_dir = ...)` is set. WFO results
+do not replace Japanese-name checklist results. Unit tests should use
+mocked GraphQL responses through
+`options(jpplantnames.wfo_graphql = ...)`, not live WFO requests.
+
 ### `gbif_match()`
 
 Implemented in `R/gbif.R`.
@@ -102,11 +171,25 @@ Change this file when:
 
 - adding returned GBIF fields;
 - changing error behavior;
-- supporting another international name service.
+- changing the optional GBIF API wrapper used by
+  [`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md).
 
 Live GBIF tests are skipped by default. Use
 `JPPLANTNAMES_RUN_NETWORK_TESTS=true` when you intentionally want to run
 network tests.
+
+## External APIs and Caches
+
+Keep network-dependent behavior explicit in examples and tests.
+Checklist data is loaded from the package cache after download.
+[`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
+does not call external APIs unless WFO or GBIF checks are requested.
+
+WFO responses can be cached and refreshed through the arguments
+described above. GBIF has no package-level response cache, so live GBIF
+tests must stay opt-in. When adding or changing an external API, keep
+unit tests mocked, document any new cache or refresh behavior, and make
+sure external results remain separate from the core checklist lookup.
 
 ## Documentation
 

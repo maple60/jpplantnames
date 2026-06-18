@@ -15,6 +15,9 @@ guide](https://maple60.github.io/jpplantnames/articles/maintenance.md)
 | チェックリスト Excel ファイルの読み込み方法 | `R/load.R` |
 | [`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md) の挙動 | `R/lookup.R`, `tests/testthat/test-lookup.R` |
 | [`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md) の検索対象やマッチ規則 | `R/lookup.R`, `tests/testthat/test-lookup.R` |
+| [`japanese_name_suggest()`](https://maple60.github.io/jpplantnames/reference/japanese_name_suggest.md) の正規化、順位付け、fuzzy match | `R/lookup.R`, `tests/testthat/test-japanese-name-suggest.R` |
+| [`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md) の summary 列や任意の WFO/GBIF 統合 | `R/japanese_name_info.R`, `tests/testthat/test-japanese-name-info.R` |
+| WFO の返却列、accepted name の要約、レスポンスキャッシュ | `R/wfo.R`, `tests/testthat/test-wfo.R` |
 | GBIF API の返却列や挙動 | `R/gbif.R`, `tests/testthat/test-gbif.R` |
 | export する関数 | `R/*.R` の roxygen コメント。`NAMESPACE` と `man/*.Rd` は再生成する |
 | パッケージ情報、依存関係、サイト URL | `DESCRIPTION` |
@@ -95,6 +98,69 @@ fixture で列構造を確認します。
 を暗黙の fuzzy lookup
 に変えるより、検索候補を明示的に返す設計を優先します。
 
+### `japanese_name_suggest()`
+
+実装は `R/lookup.R` です。
+
+ここを直す典型例:
+
+- 和名の正規化ルールを変えたい。
+- 完全一致、部分一致、fuzzy match の並び順を変えたい。
+- 既定の `max_distance`、スコア、候補順位を変えたい。
+- 任意依存の `stringi` や `stringdist` を使う挙動を変えたい。
+- `matched_value`、`distance`、`score`、`match_type`
+  などの返却メタデータを変えたい。
+
+この関数は、キャッシュ済みチェックリストの和名列だけを検索します。目的は候補行の提案であり、
+[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
+の自動補正ではありません。[`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md)
+は完全一致で保守的なままにします。 テストは
+`tests/testthat/test-japanese-name-suggest.R` にあります。
+
+### `japanese_name_info()`
+
+実装は `R/japanese_name_info.R` です。
+
+ここを直す典型例:
+
+- summary の列や print 表示を変えたい。
+- 優先するチェックリスト候補の選び方を変えたい。
+- 任意の WFO または GBIF 連携を変えたい。
+- 外部 API 失敗時の要約方法を変えたい。
+- 非推奨互換 wrapper の
+  [`ylist_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
+  を変えたい。
+
+既定では、[`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
+はキャッシュ済みチェックリストデータだけを使います。 WFO は
+`wfo = TRUE`、GBIF は `gbif = TRUE` のときだけ呼びます。WFO と GBIF
+の結果は チェックリストの summary
+に並べて保持し、チェックリストの学名を上書きしません。外部 API が
+失敗した場合は、関数全体を止めず、warning と error status
+の行で返します。テストは `tests/testthat/test-japanese-name-info.R`
+にあります。
+
+### `wfo_suggest()` と `wfo_accepted_name()`
+
+実装は `R/wfo.R` です。
+
+ここを直す典型例:
+
+- WFO GraphQL endpoint、query、返却列を変えたい。
+- accepted name の要約、rank の優先、`with_author` の挙動を変えたい。
+- WFO キャッシュのファイル名、保存場所、読み書きの挙動を変えたい。
+- `backend = "local"` を実装したい。
+
+WFO へのアクセスは、小規模な任意の外部 API 確認です。`cache = TRUE` では
+raw API response を ローカルに保存し、`refresh = TRUE`
+では既存キャッシュを無視して再取得します。既定のキャッシュ場所は
+`tools::R_user_dir("jpplantnames", which = "cache")/wfo`
+で、`options(jpplantnames.wfo_cache_dir = ...)`
+を設定すると変更できます。WFO
+の結果は和名チェックリストの結果を置き換えません。単体テストでは live
+WFO request ではなく、`options(jpplantnames.wfo_graphql = ...)` による
+mock response を使います。
+
 ### `gbif_match()`
 
 実装は `R/gbif.R` です。
@@ -103,11 +169,26 @@ fixture で列構造を確認します。
 
 - GBIF から返す列を増やしたい。
 - API エラー時の扱いを変えたい。
-- WFO や Catalogue of Life など別の国際 API を追加したい。
+- [`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
+  が使う任意の GBIF API wrapper の挙動を変えたい。
 
 GBIF の live test は通常 skip
 されます。ネットワークテストを明示的に走らせる場合は
 `JPPLANTNAMES_RUN_NETWORK_TESTS=true` を設定します。
+
+## 外部 API とキャッシュ
+
+ネットワークに依存する挙動は、examples と tests
+で明示的に扱います。チェックリストデータは
+ダウンロード後のパッケージキャッシュから読み込みます。[`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
+は、WFO または GBIF の確認を明示した場合だけ外部 API を呼びます。
+
+WFO response は上記の引数でキャッシュ・再取得できます。GBIF
+にはパッケージ側の response cache が ないため、live GBIF test は opt-in
+のままにします。外部 API を追加・変更するときは、単体テストを mock
+にし、新しい cache や refresh
+の挙動を文書化し、外部データの結果を中心となる
+チェックリスト検索から分けて保持します。
 
 ## ドキュメントの方針
 

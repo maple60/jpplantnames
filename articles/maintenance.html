@@ -110,55 +110,75 @@
 </td>
 </tr>
 <tr class="odd">
+<td>
+<code><a href="../reference/japanese_name_suggest.html">japanese_name_suggest()</a></code> normalization, ranking, or fuzzy matching</td>
+<td>
+<code>R/lookup.R</code>, <code>tests/testthat/test-japanese-name-suggest.R</code>
+</td>
+</tr>
+<tr class="even">
+<td>
+<code><a href="../reference/japanese_name_info.html">japanese_name_info()</a></code> summary fields or optional WFO/GBIF aggregation</td>
+<td>
+<code>R/japanese_name_info.R</code>, <code>tests/testthat/test-japanese-name-info.R</code>
+</td>
+</tr>
+<tr class="odd">
+<td>WFO response fields, accepted-name behavior, or response cache</td>
+<td>
+<code>R/wfo.R</code>, <code>tests/testthat/test-wfo.R</code>
+</td>
+</tr>
+<tr class="even">
 <td>GBIF response fields or API behavior</td>
 <td>
 <code>R/gbif.R</code>, <code>tests/testthat/test-gbif.R</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Exported functions</td>
 <td>roxygen comments in <code>R/*.R</code>; regenerate <code>NAMESPACE</code> and <code>man/*.Rd</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Package metadata, dependencies, site URL</td>
 <td><code>DESCRIPTION</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>README and pkgdown home page</td>
 <td><code>README.md</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Japanese README</td>
 <td><code>README.ja.md</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>pkgdown navigation and reference sections</td>
 <td><code>_pkgdown.yml</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>User guides</td>
 <td>
 <code>vignettes/get-started.qmd</code>, <code>vignettes/ja-get-started.qmd</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Maintenance guides</td>
 <td>
 <code>vignettes/maintenance.qmd</code>, <code>vignettes/ja-maintenance.qmd</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Package development tutorial</td>
 <td>
 <code>vignettes/package-development.qmd</code>, <code>vignettes/ja-package-development.qmd</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>GitHub Actions R package check</td>
 <td><code>.github/workflows/R-CMD-check.yaml</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>GitHub Pages / pkgdown deployment</td>
 <td><code>.github/workflows/pkgdown.yaml</code></td>
 </tr>
@@ -219,6 +239,46 @@
 <li>adding richer candidate ranking.</li>
 </ul>
 <p>Add tests for each new search mode. Search should remain explicit and inspectable; avoid silently changing <code><a href="../reference/scientific_name.html">scientific_name()</a></code> into a fuzzy lookup.</p>
+</section><section class="level3"><h3 id="japanese_name_suggest">
+<code>japanese_name_suggest()</code><a class="anchor" aria-label="anchor" href="#japanese_name_suggest"></a>
+</h3>
+<p>Implemented in <code>R/lookup.R</code>.</p>
+<p>Change this file when:</p>
+<ul>
+<li>Japanese-name normalization changes;</li>
+<li>exact, partial, or fuzzy-match ordering changes;</li>
+<li>default <code>max_distance</code>, scoring, or candidate ranking changes;</li>
+<li>optional <code>stringi</code> or <code>stringdist</code> behavior changes;</li>
+<li>return metadata columns such as <code>matched_value</code>, <code>distance</code>, <code>score</code>, or <code>match_type</code> change.</li>
+</ul>
+<p>This helper searches only the cached Japanese-name column. It is for suggesting candidate checklist rows, not for autocorrecting <code><a href="../reference/scientific_name.html">scientific_name()</a></code>. Keep <code><a href="../reference/scientific_name.html">scientific_name()</a></code> exact and conservative. Tests live in <code>tests/testthat/test-japanese-name-suggest.R</code>.</p>
+</section><section class="level3"><h3 id="japanese_name_info">
+<code>japanese_name_info()</code><a class="anchor" aria-label="anchor" href="#japanese_name_info"></a>
+</h3>
+<p>Implemented in <code>R/japanese_name_info.R</code>.</p>
+<p>Change this file when:</p>
+<ul>
+<li>summary columns or print output change;</li>
+<li>the preferred checklist candidate rule changes;</li>
+<li>optional WFO or GBIF integration changes;</li>
+<li>external API failures should be summarized differently;</li>
+<li>the deprecated <code><a href="../reference/japanese_name_info.html">ylist_info()</a></code> compatibility wrapper changes.</li>
+</ul>
+<p>By default, <code><a href="../reference/japanese_name_info.html">japanese_name_info()</a></code> uses only cached checklist data. It calls WFO only with <code>wfo = TRUE</code> and GBIF only with <code>gbif = TRUE</code>. WFO and GBIF results are stored alongside the checklist summary and do not overwrite checklist names. External API failures should warn and return error-status rows instead of failing the whole info call. Tests live in <code>tests/testthat/test-japanese-name-info.R</code>.</p>
+</section><section class="level3"><h3 id="wfo_suggest-and-wfo_accepted_name">
+<code>wfo_suggest()</code> and <code>wfo_accepted_name()</code>
+<a class="anchor" aria-label="anchor" href="#wfo_suggest-and-wfo_accepted_name"></a>
+</h3>
+<p>Implemented in <code>R/wfo.R</code>.</p>
+<p>Change this file when:</p>
+<ul>
+<li>the WFO GraphQL endpoint, query, or returned fields change;</li>
+<li>accepted-name summarization, rank preference, or <code>with_author</code> behavior changes;</li>
+<li>WFO cache file naming, cache directory policy, or cache read/write behavior changes;</li>
+<li>
+<code>backend = "local"</code> is implemented.</li>
+</ul>
+<p>WFO access is an optional, small-scale external API check. With <code>cache = TRUE</code>, raw API responses are cached locally; <code>refresh = TRUE</code> ignores an existing cache file and fetches again. The default cache directory is <code>tools::R_user_dir("jpplantnames", which = "cache")/wfo</code>, unless <code>options(jpplantnames.wfo_cache_dir = ...)</code> is set. WFO results do not replace Japanese-name checklist results. Unit tests should use mocked GraphQL responses through <code>options(jpplantnames.wfo_graphql = ...)</code>, not live WFO requests.</p>
 </section><section class="level3"><h3 id="gbif_match">
 <code>gbif_match()</code><a class="anchor" aria-label="anchor" href="#gbif_match"></a>
 </h3>
@@ -227,10 +287,14 @@
 <ul>
 <li>adding returned GBIF fields;</li>
 <li>changing error behavior;</li>
-<li>supporting another international name service.</li>
+<li>changing the optional GBIF API wrapper used by <code><a href="../reference/japanese_name_info.html">japanese_name_info()</a></code>.</li>
 </ul>
 <p>Live GBIF tests are skipped by default. Use <code>JPPLANTNAMES_RUN_NETWORK_TESTS=true</code> when you intentionally want to run network tests.</p>
-</section></section><section class="level2"><h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
+</section></section><section class="level2"><h2 id="external-apis-and-caches">External APIs and Caches<a class="anchor" aria-label="anchor" href="#external-apis-and-caches"></a>
+</h2>
+<p>Keep network-dependent behavior explicit in examples and tests. Checklist data is loaded from the package cache after download. <code><a href="../reference/japanese_name_info.html">japanese_name_info()</a></code> does not call external APIs unless WFO or GBIF checks are requested.</p>
+<p>WFO responses can be cached and refreshed through the arguments described above. GBIF has no package-level response cache, so live GBIF tests must stay opt-in. When adding or changing an external API, keep unit tests mocked, document any new cache or refresh behavior, and make sure external results remain separate from the core checklist lookup.</p>
+</section><section class="level2"><h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
 </h2>
 <p>The pkgdown home page is generated from <code>README.md</code>, so keep <code>README.md</code> in English and link to <code>README.ja.md</code> and the Japanese guide.</p>
 <p>Function reference pages are generated from roxygen comments in <code>R/*.R</code>. Treat the roxygen comments as the source of truth. Do not edit files in <code>man/</code> by hand; they will be overwritten the next time roxygen runs. If a reference page needs a new argument description, example, details section, alias, or deprecated-wrapper note, add it to the roxygen block next to the function.</p>
