@@ -40,8 +40,11 @@ check_japanese_name_columns <- function(data, required = required_japanese_name_
 #'
 #' @examples
 #' \dontrun{
-#' scientific_name("\u30b3\u30ca\u30e9")
-#' scientific_name("\u30b3\u30ca\u30e9", with_author = TRUE)
+#' scientific_name("コナラ")
+#' #> [1] "Quercus serrata"
+#' 
+#' scientific_name("コナラ", with_author = TRUE)
+#' #> [1] "Quercus serrata Murray"
 #' }
 scientific_name <- function(name, with_author = FALSE) {
   if (!is.character(name)) {
