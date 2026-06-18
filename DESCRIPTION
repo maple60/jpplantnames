@@ -3,13 +3,13 @@ Title: Unofficial Japanese Plant Name Lookup Tools
 Version: 0.1.0
 Authors@R:
     person(
-        given = "jpplantnames",
-        family = "contributors",
-        email = "noreply@example.com",
+        given = "Kaede",
+        family = "Konrai",
+        email = "konrai630@gmail.com",
         role = c("aut", "cre")
     )
-Author: jpplantnames contributors
-Maintainer: jpplantnames contributors <noreply@example.com>
+Author: Kaede Konrai
+Maintainer: Kaede Konrai <konrai630@gmail.com>
 Description: Fetches and caches the Vascular Plant Japanese Name Checklist
     ver. 1.10 and provides helpers for looking up scientific plant names from
     Japanese names. It also includes small optional helpers for checking
