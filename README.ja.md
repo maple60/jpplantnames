@@ -67,14 +67,7 @@ japanese_name_info("コナラ", wfo = TRUE, gbif = TRUE)
 
 ## 国際的な学名確認
 
-`gbif_match()` は GBIF species match API を呼び出す薄い補助関数です。
-チェックリストから得た学名を国際的な生物多様性データソースで確認したい場合に使います。
-
-```r
-gbif_match("Quercus serrata")
-```
-
-### WFO Plant List checks
+### WFO Plant List による確認
 
 `scientific_name()` はチェックリストの学名を返します。`wfo_suggest()` は WFO の候補名を確認し、
 `wfo_accepted_name()` は WFO 上での採用名の解釈を 1 行にまとめます。これらの関数は
@@ -88,6 +81,15 @@ sci
 
 wfo_suggest(sci)
 wfo_accepted_name(sci)
+```
+
+### GBIF による確認
+
+`gbif_match()` は GBIF species match API を呼び出す小さな任意の補助関数です。
+チェックリストから得た学名を国際的な生物多様性データソースで確認したい場合に使います。
+
+```r
+gbif_match("Quercus serrata")
 ```
 
 ## データソースと引用
