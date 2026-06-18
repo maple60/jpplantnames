@@ -1,13 +1,14 @@
 ---
 title: "Using jpplantnames"
-output: rmarkdown::html_vignette
+format: html
 vignette: >
   %\VignetteIndexEntry{Using jpplantnames}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r}
+#| include: false
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -26,7 +27,7 @@ workflow.
 
 Install the package from GitHub:
 
-```{r}
+```r
 # install.packages("pak")
 pak::pak("maple60/jpplantnames")
 ```

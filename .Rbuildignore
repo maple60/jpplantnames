@@ -7,3 +7,5 @@
 ^.*\.tar\.gz$
 ^outputs$
 ^work$
+^vignettes/\.quarto$
+^vignettes/.*\.quarto_ipynb$

@@ -30,9 +30,9 @@ Suggests:
     knitr,
     jsonlite,
     pkgdown,
-    rmarkdown,
+    quarto,
     stringdist,
     stringi,
     testthat (>= 3.0.0)
-VignetteBuilder: knitr
+VignetteBuilder: quarto
 Config/roxygen2/version: 8.0.0

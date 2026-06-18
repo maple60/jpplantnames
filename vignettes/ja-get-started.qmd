@@ -1,13 +1,14 @@
 ---
 title: "jpplantnames の使い方"
-output: rmarkdown::html_vignette
+format: html
 vignette: >
   %\VignetteIndexEntry{jpplantnames の使い方}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r}
+#| include: false
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -25,7 +26,7 @@ R から扱いやすくするための非公式パッケージです。
 
 GitHub からインストールします。
 
-```{r}
+```r
 # install.packages("pak")
 pak::pak("maple60/jpplantnames")
 ```

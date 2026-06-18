@@ -1,13 +1,14 @@
 ---
 title: "jpplantnames パッケージ開発チュートリアル"
-output: rmarkdown::html_vignette
+format: html
 vignette: >
   %\VignetteIndexEntry{jpplantnames パッケージ開発チュートリアル}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r}
+#| include: false
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -162,7 +163,7 @@ GBIF やチェックリストへの live test は任意にします。外部 API
 
 - `README.md` は英語トップページになる。
 - `README.ja.md` は日本語の入口になる。
-- `vignettes/*.Rmd` は article ページになる。
+- `vignettes/*.qmd` は article ページになる。
 - `_pkgdown.yml` でナビゲーションと reference 分類を決める。
 
 GitHub Actions で pkgdown を実行し、生成されたサイトを GitHub Pages に公開します。

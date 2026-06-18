@@ -1,13 +1,14 @@
 ---
 title: "Building jpplantnames as an R package"
-output: rmarkdown::html_vignette
+format: html
 vignette: >
   %\VignetteIndexEntry{Building jpplantnames as an R package}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r}
+#| include: false
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -161,7 +162,7 @@ The documentation site is built with pkgdown:
 
 - `README.md` becomes the English home page;
 - `README.ja.md` provides the Japanese landing page;
-- `vignettes/*.Rmd` become article pages;
+- `vignettes/*.qmd` become article pages;
 - `_pkgdown.yml` controls navigation and reference grouping.
 
 GitHub Actions runs pkgdown and publishes the generated site to GitHub Pages.
