@@ -64,16 +64,15 @@ status, role, and cache status.
 
 ## Details
 
-WFO accepted names are database- and release-dependent. WFO API access
-is intended for small-scale interactive checks. For large-scale or
-reproducible workflows, use cached results and record the WFO release or
-use a future local WFO release workflow.
+WFO accepted names are database- and release-dependent. For large-scale
+or reproducible workflows, use cached results and record the WFO release
+or use a future local WFO release workflow.
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
 wfo_suggest("Quercus serrata")
-wfo_suggest(scientific_name("コナラ"))
+wfo_suggest(scientific_name("\u30b3\u30ca\u30e9"))
 } # }
 ```

@@ -174,8 +174,8 @@ Search cached checklist rows and retrieve scientific names.
   [`ylist_suggest()`](https://maple60.github.io/jpplantnames/reference/japanese_name_suggest.md)
   : Suggest lookup rows for an approximate Japanese plant name
 - [`japanese_name_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
-  [`print(`*`<japanese_name_info>`*`)`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
   [`ylist_info()`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
+  [`print(`*`<japanese_name_info>`*`)`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
   [`print(`*`<ylist_info>`*`)`](https://maple60.github.io/jpplantnames/reference/japanese_name_info.md)
   : Get a high-level Japanese-name checklist summary
 

@@ -121,9 +121,8 @@ URL、キャッシュファイル名、キャッシュ場所</td>
 <tr class="even">
 <td>export する関数</td>
 <td>
-<code>NAMESPACE</code>, <code>man/</code> 以下の対応する
-<code>.Rd</code>
-</td>
+<code>R/*.R</code> の roxygen コメント。<code>NAMESPACE</code> と
+<code>man/*.Rd</code> は再生成する</td>
 </tr>
 <tr class="odd">
 <td>パッケージ情報、依存関係、サイト URL</td>
@@ -271,6 +270,12 @@ fixture で列構造を確認します。</p>
 から生成されます。そのため、トップページは
 英語を正にし、日本語で読みたい人には <code>README.ja.md</code>
 と日本語ガイドへ誘導します。</p>
+<p>関数リファレンスは <code>R/*.R</code> の roxygen
+コメントから生成します。人間が保守する原本は roxygen
+コメントです。<code>man/</code> 以下の <code>.Rd</code>
+ファイルは自動生成物なので、直接編集しません。
+引数説明、examples、details、alias、非推奨 wrapper
+の説明を変える場合は、関数の近くの roxygen block を直します。</p>
 <p>役割分担は次の通りです。</p>
 <ul>
 <li>
@@ -298,23 +303,65 @@ fixture で列構造を確認します。</p>
 <code>_pkgdown.yml</code>:
 サイトのナビゲーション、記事分類、reference 分類。</li>
 </ul>
-<p>ドキュメントを変えた後は、可能なら pkgdown
-サイトをローカルでビルドします。</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+</div>
+<div class="section level2">
+<h2 id="ローカルでのドキュメント更新手順">ローカルでのドキュメント更新手順<a class="anchor" aria-label="anchor" href="#%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%AB%E3%81%A7%E3%81%AE%E3%83%89%E3%82%AD%E3%83%A5%E3%83%A1%E3%83%B3%E3%83%88%E6%9B%B4%E6%96%B0%E6%89%8B%E9%A0%86"></a>
+</h2>
+<p>関数リファレンスを変える場合:</p>
+<ol style="list-style-type: decimal">
+<li>
+<code>R/*.R</code> の roxygen コメントを編集します。</li>
+<li>reference 用ファイルを再生成します。</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>Rscript <span class="op">-</span>e <span class="st">"roxygen2::roxygenise()"</span></span></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>生成された差分を確認します。</li>
+</ol>
+<div class="sourceCode" id="cb2"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>git <span class="fu">diff</span> <span class="op">--</span> <span class="fu">R</span><span class="op">/</span> <span class="fu">man</span><span class="op">/</span> NAMESPACE</span></code></pre></div>
+<p>README、vignette、pkgdown のナビゲーションを変えた場合は、可能なら
+pkgdown サイトも ローカルでビルドします。</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">build_site</a></span><span class="op">(</span>preview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p><code>docs/</code> が空ではなく、pkgdown
+が作ったサイトとして認識されないというエラーが出た場合は、
+ローカル生成物を消してから作り直します。</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/clean.html" class="external-link">clean_site</a></span><span class="op">(</span>force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">build_site</a></span><span class="op">(</span>preview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p>このリポジトリでは <code>docs/</code>
+はローカル確認用で、<code>.gitignore</code> に入っています。公開サイトは
+GitHub Actions が <code>gh-pages</code> ブランチへ deploy
+するため、通常のドキュメント更新では ローカルの <code>docs/</code> を
+stage しません。</p>
+<p>Windows でローカル pkgdown build を行う場合、Pandoc と書き込み可能な
+R cache を 環境変数で指定する必要があることがあります。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">RSTUDIO_PANDOC</span> <span class="op">=</span> <span class="st">"C:\Program Files\RStudio\resources\app\bin\quarto\bin\tools"</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">R_USER_CACHE_DIR</span> <span class="op">=</span> <span class="st">"C:\Users\Konrai\github\ylistjp\work\r-cache"</span></span></code></pre></div>
+<p><code>realfavicongenerator.net</code>、<code>cloud.r-project.org</code>、Bioconductor
+への接続で ローカル build
+が失敗する場合は、ドキュメント原本の問題ではなく、ローカル環境または
+ネットワーク制限による失敗として扱います。その場合は roxygen と vignette
+の変更を push し、 ネットワークのある CI 環境で動く GitHub Actions の
+pkgdown workflow を確認します。</p>
 </div>
 <div class="section level2">
 <h2 id="テストと確認">テストと確認<a class="anchor" aria-label="anchor" href="#%E3%83%86%E3%82%B9%E3%83%88%E3%81%A8%E7%A2%BA%E8%AA%8D"></a>
 </h2>
 <p>単体テスト:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_package.html" class="external-link">test_local</a></span><span class="op">(</span><span class="st">"."</span>, reporter <span class="op">=</span> <span class="st">"summary"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>Rscript <span class="op">-</span>e <span class="st">"testthat::test_local('.', reporter = 'summary')"</span></span></code></pre></div>
 <p>パッケージ build/check:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">R</span> CMD build .</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="ex">R</span> CMD check jpplantnames_0.1.0.tar.gz <span class="at">--no-manual</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">R</span> CMD build <span class="op">.</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">R</span> CMD check jpplantnames_0<span class="op">.</span><span class="dv">1.0</span><span class="op">.</span><span class="fu">tar</span><span class="op">.</span><span class="fu">gz</span> <span class="op">--</span>no-manual</span></code></pre></div>
 <p>Windows で Pandoc が <code>PATH</code> にない場合は、vignettes や
 pkgdown の build 前に <code>RSTUDIO_PANDOC</code> をインストール済み
 Pandoc のディレクトリへ向けます。</p>
+<p>ドキュメントだけの変更でも、commit
+前には最終的な対象ファイルを確認します。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>git status <span class="op">--</span>short</span></code></pre></div>
+<p>commit するのは、編集した原本と roxygen 生成物です。たとえば
+<code>R/*.R</code>、 <code>man/*.Rd</code>、変更があれば
+<code>NAMESPACE</code> を含めます。通常の運用では、ローカルの pkgdown
+build でできた <code>docs/</code> は commit しません。</p>
 </div>
 <div class="section level2">
 <h2 id="変更前後のチェックリスト">変更前後のチェックリスト<a class="anchor" aria-label="anchor" href="#%E5%A4%89%E6%9B%B4%E5%89%8D%E5%BE%8C%E3%81%AE%E3%83%81%E3%82%A7%E3%83%83%E3%82%AF%E3%83%AA%E3%82%B9%E3%83%88"></a>
@@ -324,6 +371,8 @@ Pandoc のディレクトリへ向けます。</p>
 <li>挙動を変えた場合はテストを更新する。</li>
 <li>ユーザーに見える挙動を変えた場合は README
 と日英の使い方ガイドを更新する。</li>
+<li>roxygen コメントを変えた場合は <code>roxygen2::roxygenise()</code>
+を実行する。</li>
 <li>
 <code><a href="https://testthat.r-lib.org/reference/test_package.html" class="external-link">testthat::test_local()</a></code> を実行する。</li>
 <li>

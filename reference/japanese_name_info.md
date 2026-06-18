@@ -21,9 +21,6 @@ japanese_name_info(
   ...
 )
 
-# S3 method for class 'japanese_name_info'
-print(x, ...)
-
 ylist_info(
   name,
   with_author = TRUE,
@@ -36,6 +33,9 @@ ylist_info(
   delay = 0.2,
   ...
 )
+
+# S3 method for class 'japanese_name_info'
+print(x, ...)
 
 # S3 method for class 'ylist_info'
 print(x, ...)
@@ -125,10 +125,10 @@ alias. WFO and GBIF results do not overwrite checklist names.
 
 ``` r
 if (FALSE) { # \dontrun{
-japanese_name_info("コナラ")
-japanese_name_info(c("コナラ", "ミズナラ"))
+japanese_name_info("\u30b3\u30ca\u30e9")
+japanese_name_info(c("\u30b3\u30ca\u30e9", "\u30df\u30ba\u30ca\u30e9"))
 
-japanese_name_info("コナラ", wfo = TRUE)
-japanese_name_info("コナラ", wfo = TRUE, gbif = TRUE)
+japanese_name_info("\u30b3\u30ca\u30e9", wfo = TRUE)
+japanese_name_info("\u30b3\u30ca\u30e9", wfo = TRUE, gbif = TRUE)
 } # }
 ```

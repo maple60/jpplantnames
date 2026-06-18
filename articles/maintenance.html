@@ -121,9 +121,8 @@ edited.</p>
 </tr>
 <tr class="even">
 <td>Exported functions</td>
-<td>
-<code>NAMESPACE</code>, matching <code>.Rd</code> files in
-<code>man/</code>
+<td>roxygen comments in <code>R/*.R</code>; regenerate
+<code>NAMESPACE</code> and <code>man/*.Rd</code>
 </td>
 </tr>
 <tr class="odd">
@@ -271,6 +270,12 @@ want to run network tests.</p>
 <p>The pkgdown home page is generated from <code>README.md</code>, so
 keep <code>README.md</code> in English and link to
 <code>README.ja.md</code> and the Japanese guide.</p>
+<p>Function reference pages are generated from roxygen comments in
+<code>R/*.R</code>. Treat the roxygen comments as the source of truth.
+Do not edit files in <code>man/</code> by hand; they will be overwritten
+the next time roxygen runs. If a reference page needs a new argument
+description, example, details section, alias, or deprecated-wrapper
+note, add it to the roxygen block next to the function.</p>
 <p>Use this split:</p>
 <ul>
 <li>
@@ -297,23 +302,62 @@ package-build tutorial.</li>
 <code>_pkgdown.yml</code>: site navigation, article groups, and
 reference sections.</li>
 </ul>
-<p>After editing documentation, build the site locally when
-possible:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+</div>
+<div class="section level2">
+<h2 id="local-documentation-workflow">Local Documentation Workflow<a class="anchor" aria-label="anchor" href="#local-documentation-workflow"></a>
+</h2>
+<p>For a function-reference change:</p>
+<ol style="list-style-type: decimal">
+<li>Edit the roxygen comments in <code>R/*.R</code>.</li>
+<li>Regenerate reference files:</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>Rscript <span class="op">-</span>e <span class="st">"roxygen2::roxygenise()"</span></span></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>Review the generated diff:</li>
+</ol>
+<div class="sourceCode" id="cb2"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>git <span class="fu">diff</span> <span class="op">--</span> <span class="fu">R</span><span class="op">/</span> <span class="fu">man</span><span class="op">/</span> NAMESPACE</span></code></pre></div>
+<p>For README, vignette, or pkgdown navigation changes, also build the
+site locally when possible:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">build_site</a></span><span class="op">(</span>preview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p>If pkgdown stops because <code>docs/</code> is non-empty and not
+recognized as a pkgdown site, remove the local generated site first:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/clean.html" class="external-link">clean_site</a></span><span class="op">(</span>force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">build_site</a></span><span class="op">(</span>preview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p>In this repository, <code>docs/</code> is ignored locally. GitHub
+Actions deploys the published pkgdown site to the <code>gh-pages</code>
+branch, so do not stage local <code>docs/</code> files for ordinary
+documentation updates.</p>
+<p>On Windows, local pkgdown builds may also need environment variables
+for Pandoc and a writable R cache:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">RSTUDIO_PANDOC</span> <span class="op">=</span> <span class="st">"C:\Program Files\RStudio\resources\app\bin\quarto\bin\tools"</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">R_USER_CACHE_DIR</span> <span class="op">=</span> <span class="st">"C:\Users\Konrai\github\ylistjp\work\r-cache"</span></span></code></pre></div>
+<p>If the local build fails while contacting
+<code>realfavicongenerator.net</code>, <code>cloud.r-project.org</code>,
+or Bioconductor, treat that as an environment or network failure rather
+than a documentation-source failure. Push the roxygen and vignette
+changes and verify the GitHub Actions pkgdown workflow, which runs in a
+networked CI environment.</p>
 </div>
 <div class="section level2">
 <h2 id="tests-and-checks">Tests and Checks<a class="anchor" aria-label="anchor" href="#tests-and-checks"></a>
 </h2>
 <p>Run unit tests:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_package.html" class="external-link">test_local</a></span><span class="op">(</span><span class="st">"."</span>, reporter <span class="op">=</span> <span class="st">"summary"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>Rscript <span class="op">-</span>e <span class="st">"testthat::test_local('.', reporter = 'summary')"</span></span></code></pre></div>
 <p>Build and check the package:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">R</span> CMD build .</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="ex">R</span> CMD check jpplantnames_0.1.0.tar.gz <span class="at">--no-manual</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">R</span> CMD build <span class="op">.</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">R</span> CMD check jpplantnames_0<span class="op">.</span><span class="dv">1.0</span><span class="op">.</span><span class="fu">tar</span><span class="op">.</span><span class="fu">gz</span> <span class="op">--</span>no-manual</span></code></pre></div>
 <p>On Windows, if Pandoc is not on <code>PATH</code>, set
 <code>RSTUDIO_PANDOC</code> to an installed Pandoc directory before
 building vignettes or pkgdown.</p>
+<p>Before committing a documentation-only change, check the final file
+set:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>git status <span class="op">--</span>short</span></code></pre></div>
+<p>Commit the edited sources and generated roxygen outputs, such as
+<code>R/*.R</code>, <code>man/*.Rd</code>, and <code>NAMESPACE</code>
+when it changes. Do not commit <code>docs/</code> from a local pkgdown
+build in the usual workflow.</p>
 </div>
 <div class="section level2">
 <h2 id="release-checklist">Release Checklist<a class="anchor" aria-label="anchor" href="#release-checklist"></a>
@@ -323,6 +367,8 @@ building vignettes or pkgdown.</p>
 <li>Update tests for any behavior change.</li>
 <li>Update README and both language guides if user-visible behavior
 changes.</li>
+<li>Run <code>roxygen2::roxygenise()</code> if roxygen comments
+changed.</li>
 <li>Run <code><a href="https://testthat.r-lib.org/reference/test_package.html" class="external-link">testthat::test_local()</a></code>.</li>
 <li>Run <code>R CMD build</code> and <code>R CMD check</code>.</li>
 <li>Build pkgdown locally if documentation changed.</li>

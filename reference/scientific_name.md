@@ -36,6 +36,9 @@ A character vector with one result per input name. Missing names return
 ``` r
 if (FALSE) { # \dontrun{
 scientific_name("コナラ")
+#> [1] "Quercus serrata"
+
 scientific_name("コナラ", with_author = TRUE)
+#> [1] "Quercus serrata Murray"
 } # }
 ```

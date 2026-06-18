@@ -16,7 +16,7 @@ guide](https://maple60.github.io/jpplantnames/articles/maintenance.md)
 | [`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md) の挙動 | `R/lookup.R`, `tests/testthat/test-lookup.R` |
 | [`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md) の検索対象やマッチ規則 | `R/lookup.R`, `tests/testthat/test-lookup.R` |
 | GBIF API の返却列や挙動 | `R/gbif.R`, `tests/testthat/test-gbif.R` |
-| export する関数 | `NAMESPACE`, `man/` 以下の対応する `.Rd` |
+| export する関数 | `R/*.R` の roxygen コメント。`NAMESPACE` と `man/*.Rd` は再生成する |
 | パッケージ情報、依存関係、サイト URL | `DESCRIPTION` |
 | README と pkgdown トップページ | `README.md` |
 | 日本語 README | `README.ja.md` |
@@ -116,6 +116,13 @@ pkgdown のトップページは `README.md`
 英語を正にし、日本語で読みたい人には `README.ja.md`
 と日本語ガイドへ誘導します。
 
+関数リファレンスは `R/*.R` の roxygen
+コメントから生成します。人間が保守する原本は roxygen
+コメントです。`man/` 以下の `.Rd`
+ファイルは自動生成物なので、直接編集しません。
+引数説明、examples、details、alias、非推奨 wrapper
+の説明を変える場合は、関数の近くの roxygen block を直します。
+
 役割分担は次の通りです。
 
 - `README.md`: 英語のトップページ。
@@ -130,26 +137,72 @@ pkgdown のトップページは `README.md`
   日本語のパッケージ開発チュートリアル。
 - `_pkgdown.yml`: サイトのナビゲーション、記事分類、reference 分類。
 
-ドキュメントを変えた後は、可能なら pkgdown
-サイトをローカルでビルドします。
+## ローカルでのドキュメント更新手順
+
+関数リファレンスを変える場合:
+
+1.  `R/*.R` の roxygen コメントを編集します。
+2.  reference 用ファイルを再生成します。
+
+``` powershell
+Rscript -e "roxygen2::roxygenise()"
+```
+
+3.  生成された差分を確認します。
+
+``` powershell
+git diff -- R/ man/ NAMESPACE
+```
+
+README、vignette、pkgdown のナビゲーションを変えた場合は、可能なら
+pkgdown サイトも ローカルでビルドします。
 
 ``` r
 
 pkgdown::build_site(preview = FALSE)
 ```
 
+`docs/` が空ではなく、pkgdown
+が作ったサイトとして認識されないというエラーが出た場合は、
+ローカル生成物を消してから作り直します。
+
+``` r
+
+pkgdown::clean_site(force = TRUE)
+pkgdown::build_site(preview = FALSE)
+```
+
+このリポジトリでは `docs/` はローカル確認用で、`.gitignore`
+に入っています。公開サイトは GitHub Actions が `gh-pages` ブランチへ
+deploy するため、通常のドキュメント更新では ローカルの `docs/` を stage
+しません。
+
+Windows でローカル pkgdown build を行う場合、Pandoc と書き込み可能な R
+cache を 環境変数で指定する必要があることがあります。
+
+``` powershell
+$env:RSTUDIO_PANDOC = "C:\Program Files\RStudio\resources\app\bin\quarto\bin\tools"
+$env:R_USER_CACHE_DIR = "C:\Users\Konrai\github\ylistjp\work\r-cache"
+```
+
+`realfavicongenerator.net`、`cloud.r-project.org`、Bioconductor
+への接続で ローカル build
+が失敗する場合は、ドキュメント原本の問題ではなく、ローカル環境または
+ネットワーク制限による失敗として扱います。その場合は roxygen と vignette
+の変更を push し、 ネットワークのある CI 環境で動く GitHub Actions の
+pkgdown workflow を確認します。
+
 ## テストと確認
 
 単体テスト:
 
-``` r
-
-testthat::test_local(".", reporter = "summary")
+``` powershell
+Rscript -e "testthat::test_local('.', reporter = 'summary')"
 ```
 
 パッケージ build/check:
 
-``` sh
+``` powershell
 R CMD build .
 R CMD check jpplantnames_0.1.0.tar.gz --no-manual
 ```
@@ -158,6 +211,18 @@ Windows で Pandoc が `PATH` にない場合は、vignettes や pkgdown の bui
 前に `RSTUDIO_PANDOC` をインストール済み Pandoc
 のディレクトリへ向けます。
 
+ドキュメントだけの変更でも、commit
+前には最終的な対象ファイルを確認します。
+
+``` powershell
+git status --short
+```
+
+commit するのは、編集した原本と roxygen 生成物です。たとえば `R/*.R`、
+`man/*.Rd`、変更があれば `NAMESPACE`
+を含めます。通常の運用では、ローカルの pkgdown build でできた `docs/` は
+commit しません。
+
 ## 変更前後のチェックリスト
 
 保守変更を push する前に、次を確認します。
@@ -165,10 +230,11 @@ Windows で Pandoc が `PATH` にない場合は、vignettes や pkgdown の bui
 1.  挙動を変えた場合はテストを更新する。
 2.  ユーザーに見える挙動を変えた場合は README
     と日英の使い方ガイドを更新する。
-3.  [`testthat::test_local()`](https://testthat.r-lib.org/reference/test_package.html)
+3.  roxygen コメントを変えた場合は `roxygen2::roxygenise()` を実行する。
+4.  [`testthat::test_local()`](https://testthat.r-lib.org/reference/test_package.html)
     を実行する。
-4.  `R CMD build` と `R CMD check` を実行する。
-5.  ドキュメントを変えた場合は pkgdown をローカル build する。
-6.  push 後に GitHub Actions の 2 つの workflow を確認する。
-7.  <https://maple60.github.io/jpplantnames/>
+5.  `R CMD build` と `R CMD check` を実行する。
+6.  ドキュメントを変えた場合は pkgdown をローカル build する。
+7.  push 後に GitHub Actions の 2 つの workflow を確認する。
+8.  <https://maple60.github.io/jpplantnames/>
     が更新されているか確認する。

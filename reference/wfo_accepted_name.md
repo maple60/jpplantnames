@@ -69,7 +69,7 @@ A data frame with one row per input and a clear `match_status`.
 
 WFO API access is intended for small-scale interactive checks. These
 functions do not automatically replace checklist names with WFO accepted
-names. Accepted names are database- and release-dependent.
+names.
 
 ## Examples
 
@@ -77,6 +77,6 @@ names. Accepted names are database- and release-dependent.
 if (FALSE) { # \dontrun{
 wfo_accepted_name("Quercus serrata")
 wfo_accepted_name("Quercus serrata", with_author = FALSE)
-wfo_accepted_name(scientific_name("コナラ"))
+wfo_accepted_name(scientific_name("\u30b3\u30ca\u30e9"))
 } # }
 ```

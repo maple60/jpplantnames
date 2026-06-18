@@ -16,7 +16,7 @@ For Japanese, see [日本語:
 | [`scientific_name()`](https://maple60.github.io/jpplantnames/reference/scientific_name.md) behavior | `R/lookup.R`, `tests/testthat/test-lookup.R` |
 | [`japanese_name_search()`](https://maple60.github.io/jpplantnames/reference/japanese_name_search.md) fields or matching rules | `R/lookup.R`, `tests/testthat/test-lookup.R` |
 | GBIF response fields or API behavior | `R/gbif.R`, `tests/testthat/test-gbif.R` |
-| Exported functions | `NAMESPACE`, matching `.Rd` files in `man/` |
+| Exported functions | roxygen comments in `R/*.R`; regenerate `NAMESPACE` and `man/*.Rd` |
 | Package metadata, dependencies, site URL | `DESCRIPTION` |
 | README and pkgdown home page | `README.md` |
 | Japanese README | `README.ja.md` |
@@ -113,6 +113,13 @@ network tests.
 The pkgdown home page is generated from `README.md`, so keep `README.md`
 in English and link to `README.ja.md` and the Japanese guide.
 
+Function reference pages are generated from roxygen comments in `R/*.R`.
+Treat the roxygen comments as the source of truth. Do not edit files in
+`man/` by hand; they will be overwritten the next time roxygen runs. If
+a reference page needs a new argument description, example, details
+section, alias, or deprecated-wrapper note, add it to the roxygen block
+next to the function.
+
 Use this split:
 
 - `README.md`: English top-level landing page.
@@ -127,31 +134,85 @@ Use this split:
 - `_pkgdown.yml`: site navigation, article groups, and reference
   sections.
 
-After editing documentation, build the site locally when possible:
+## Local Documentation Workflow
+
+For a function-reference change:
+
+1.  Edit the roxygen comments in `R/*.R`.
+2.  Regenerate reference files:
+
+``` powershell
+Rscript -e "roxygen2::roxygenise()"
+```
+
+3.  Review the generated diff:
+
+``` powershell
+git diff -- R/ man/ NAMESPACE
+```
+
+For README, vignette, or pkgdown navigation changes, also build the site
+locally when possible:
 
 ``` r
 
 pkgdown::build_site(preview = FALSE)
 ```
 
+If pkgdown stops because `docs/` is non-empty and not recognized as a
+pkgdown site, remove the local generated site first:
+
+``` r
+
+pkgdown::clean_site(force = TRUE)
+pkgdown::build_site(preview = FALSE)
+```
+
+In this repository, `docs/` is ignored locally. GitHub Actions deploys
+the published pkgdown site to the `gh-pages` branch, so do not stage
+local `docs/` files for ordinary documentation updates.
+
+On Windows, local pkgdown builds may also need environment variables for
+Pandoc and a writable R cache:
+
+``` powershell
+$env:RSTUDIO_PANDOC = "C:\Program Files\RStudio\resources\app\bin\quarto\bin\tools"
+$env:R_USER_CACHE_DIR = "C:\Users\Konrai\github\ylistjp\work\r-cache"
+```
+
+If the local build fails while contacting `realfavicongenerator.net`,
+`cloud.r-project.org`, or Bioconductor, treat that as an environment or
+network failure rather than a documentation-source failure. Push the
+roxygen and vignette changes and verify the GitHub Actions pkgdown
+workflow, which runs in a networked CI environment.
+
 ## Tests and Checks
 
 Run unit tests:
 
-``` r
-
-testthat::test_local(".", reporter = "summary")
+``` powershell
+Rscript -e "testthat::test_local('.', reporter = 'summary')"
 ```
 
 Build and check the package:
 
-``` sh
+``` powershell
 R CMD build .
 R CMD check jpplantnames_0.1.0.tar.gz --no-manual
 ```
 
 On Windows, if Pandoc is not on `PATH`, set `RSTUDIO_PANDOC` to an
 installed Pandoc directory before building vignettes or pkgdown.
+
+Before committing a documentation-only change, check the final file set:
+
+``` powershell
+git status --short
+```
+
+Commit the edited sources and generated roxygen outputs, such as
+`R/*.R`, `man/*.Rd`, and `NAMESPACE` when it changes. Do not commit
+`docs/` from a local pkgdown build in the usual workflow.
 
 ## Release Checklist
 
@@ -160,9 +221,10 @@ Before pushing a maintenance change:
 1.  Update tests for any behavior change.
 2.  Update README and both language guides if user-visible behavior
     changes.
-3.  Run
+3.  Run `roxygen2::roxygenise()` if roxygen comments changed.
+4.  Run
     [`testthat::test_local()`](https://testthat.r-lib.org/reference/test_package.html).
-4.  Run `R CMD build` and `R CMD check`.
-5.  Build pkgdown locally if documentation changed.
-6.  Push and verify both GitHub Actions workflows.
-7.  Confirm the site at <https://maple60.github.io/jpplantnames/>.
+5.  Run `R CMD build` and `R CMD check`.
+6.  Build pkgdown locally if documentation changed.
+7.  Push and verify both GitHub Actions workflows.
+8.  Confirm the site at <https://maple60.github.io/jpplantnames/>.
