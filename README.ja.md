@@ -1,5 +1,7 @@
 # jpplantnames
 
+<img src="man/figures/logo.png" align="right" height="139" alt="jpplantnames logo" />
+
 `jpplantnames` は、[JBIF](https://gbif.jp/activities/checklist/wamei_checklist_110/) が公開する
 「維管束植物和名チェックリスト ver. 1.10」を利用して、和名から学名を調べるための
 非公式 R パッケージです。
