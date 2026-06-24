@@ -61,6 +61,42 @@ guide](https://maple60.github.io/jpplantnames/articles/maintenance.md)
 単体テストでは本番の巨大ファイルを直接ダウンロードせず、小さな合成
 fixture で列構造を確認します。
 
+### JBIF チェックリストのバージョンを更新する
+
+現在の対象は「維管束植物和名チェックリスト ver. 1.10」です。JBIF
+から新版が公開された場合は、 変更範囲が追跡できるように小さく進めます。
+
+1.  JBIF の新版ページ、Excel URL、バージョン表記、引用文を確認する。
+2.  新旧の Excel
+    ファイルをパッケージキャッシュとは別の場所に保存し、シート名と
+    `JN_dataset` の列名差分を確認する。
+3.  `R/cache.R` の `CHECKLIST_URL` と `CHECKLIST_CACHE_FILE`
+    を更新する。
+4.  シート名や必須列が変わった場合は、`R/load.R` の
+    `checklist_japanese_name_sheet`、
+    `required_checklist_columns`、`normalize_checklist_japanese_name_dataset()`
+    を必要最小限で更新する。
+5.  `tests/testthat/helper-fixture.R` の合成 Excel fixture
+    を新しい列構造に合わせる。
+    単体テストでは本番ファイルを直接ダウンロードしない。
+6.  広い package check の前に
+    [`testthat::test_local()`](https://testthat.r-lib.org/reference/test_package.html)
+    を実行する。
+7.  `README.md`、`README.ja.md`、日英の使い方ガイド、このメンテナンスガイドの
+    バージョン表記、URL、引用文を同期する。
+
+列名差分の確認は、手作業ではなく `readxl` で直接確認します。
+
+``` r
+
+old <- readxl::read_excel("old-checklist.xlsx", sheet = "JN_dataset",
+                          n_max = 0, .name_repair = "minimal")
+new <- readxl::read_excel("new-checklist.xlsx", sheet = "JN_dataset",
+                          n_max = 0, .name_repair = "minimal")
+setdiff(names(new), names(old))
+setdiff(names(old), names(new))
+```
+
 ### `scientific_name()`
 
 実装は `R/lookup.R` です。

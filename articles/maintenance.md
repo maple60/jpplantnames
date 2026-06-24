@@ -59,6 +59,43 @@ The checklist Excel file is read from the `JN_dataset` sheet. Keep
 structure tests in the synthetic fixture rather than downloading the
 full checklist file during unit tests.
 
+### Updating the JBIF checklist version
+
+The package currently targets the Vascular Plant Japanese Name Checklist
+ver. 1.10. When JBIF publishes a new checklist version, keep the update
+small and auditable:
+
+1.  Confirm the new JBIF page, Excel URL, version label, and citation
+    text.
+2.  Download the old and new Excel files outside the package cache and
+    compare sheet names plus the `JN_dataset` column names.
+3.  Update `CHECKLIST_URL` and `CHECKLIST_CACHE_FILE` in `R/cache.R`.
+4.  If sheet names or required columns changed, update
+    `checklist_japanese_name_sheet`, `required_checklist_columns`, and
+    `normalize_checklist_japanese_name_dataset()` in `R/load.R`.
+5.  Update the synthetic Excel fixture in
+    `tests/testthat/helper-fixture.R` so unit tests cover the new column
+    structure without downloading the full file.
+6.  Run
+    [`testthat::test_local()`](https://testthat.r-lib.org/reference/test_package.html)
+    before broader package checks.
+7.  Update version labels, source URLs, and citation text in
+    `README.md`, `README.ja.md`, the usage guides, and this maintenance
+    guide.
+
+For the column comparison, use `readxl` directly rather than inspecting
+the file manually:
+
+``` r
+
+old <- readxl::read_excel("old-checklist.xlsx", sheet = "JN_dataset",
+                          n_max = 0, .name_repair = "minimal")
+new <- readxl::read_excel("new-checklist.xlsx", sheet = "JN_dataset",
+                          n_max = 0, .name_repair = "minimal")
+setdiff(names(new), names(old))
+setdiff(names(old), names(new))
+```
+
 ### `scientific_name()`
 
 Implemented in `R/lookup.R`.

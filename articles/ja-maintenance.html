@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>メンテナンスガイド • jpplantnames</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -45,6 +50,7 @@
     <li><a class="dropdown-item" href="../articles/ja-package-development.html">日本語: パッケージ開発チュートリアル</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -207,6 +213,31 @@
 <li>読み込み後の整形処理を追加したい。</li>
 </ul>
 <p>現在はチェックリスト Excel ファイルの <code>JN_dataset</code> シートを読み込んでいます。 単体テストでは本番の巨大ファイルを直接ダウンロードせず、小さな合成 fixture で列構造を確認します。</p>
+</section><section class="level3"><h3 id="jbif-チェックリストのバージョンを更新する">JBIF チェックリストのバージョンを更新する<a class="anchor" aria-label="anchor" href="#jbif-%E3%83%81%E3%82%A7%E3%83%83%E3%82%AF%E3%83%AA%E3%82%B9%E3%83%88%E3%81%AE%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3%E3%82%92%E6%9B%B4%E6%96%B0%E3%81%99%E3%82%8B"></a>
+</h3>
+<p>現在の対象は「維管束植物和名チェックリスト ver. 1.10」です。JBIF から新版が公開された場合は、 変更範囲が追跡できるように小さく進めます。</p>
+<ol type="1">
+<li>JBIF の新版ページ、Excel URL、バージョン表記、引用文を確認する。</li>
+<li>新旧の Excel ファイルをパッケージキャッシュとは別の場所に保存し、シート名と <code>JN_dataset</code> の列名差分を確認する。</li>
+<li>
+<code>R/cache.R</code> の <code>CHECKLIST_URL</code> と <code>CHECKLIST_CACHE_FILE</code> を更新する。</li>
+<li>シート名や必須列が変わった場合は、<code>R/load.R</code> の <code>checklist_japanese_name_sheet</code>、 <code>required_checklist_columns</code>、<code>normalize_checklist_japanese_name_dataset()</code> を必要最小限で更新する。</li>
+<li>
+<code>tests/testthat/helper-fixture.R</code> の合成 Excel fixture を新しい列構造に合わせる。 単体テストでは本番ファイルを直接ダウンロードしない。</li>
+<li>広い package check の前に <code><a href="https://testthat.r-lib.org/reference/test_package.html" class="external-link">testthat::test_local()</a></code> を実行する。</li>
+<li>
+<code>README.md</code>、<code>README.ja.md</code>、日英の使い方ガイド、このメンテナンスガイドの バージョン表記、URL、引用文を同期する。</li>
+</ol>
+<p>列名差分の確認は、手作業ではなく <code>readxl</code> で直接確認します。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">old</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_excel</a></span><span class="op">(</span><span class="st">"old-checklist.xlsx"</span>, sheet <span class="op">=</span> <span class="st">"JN_dataset"</span>,</span>
+<span>                          n_max <span class="op">=</span> <span class="fl">0</span>, .name_repair <span class="op">=</span> <span class="st">"minimal"</span><span class="op">)</span></span>
+<span><span class="va">new</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_excel</a></span><span class="op">(</span><span class="st">"new-checklist.xlsx"</span>, sheet <span class="op">=</span> <span class="st">"JN_dataset"</span>,</span>
+<span>                          n_max <span class="op">=</span> <span class="fl">0</span>, .name_repair <span class="op">=</span> <span class="st">"minimal"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">new</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">new</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
 </section><section class="level3"><h3 id="scientific_name">
 <code>scientific_name()</code><a class="anchor" aria-label="anchor" href="#scientific_name"></a>
 </h3>
@@ -330,37 +361,37 @@
 <code>R/*.R</code> の roxygen コメントを編集します。</li>
 <li>reference 用ファイルを再生成します。</li>
 </ol>
-<div class="sourceCode" id="cb1"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="op">-</span>e <span class="st">"roxygen2::roxygenise()"</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="op">-</span>e <span class="st">"roxygen2::roxygenise()"</span></span></code></pre></div>
 <ol start="3" type="1">
 <li>生成された差分を確認します。</li>
 </ol>
-<div class="sourceCode" id="cb2"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>git <span class="fu">diff</span> <span class="op">--</span> <span class="fu">R</span><span class="op">/</span> <span class="fu">man</span><span class="op">/</span> NAMESPACE</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>git <span class="fu">diff</span> <span class="op">--</span> <span class="fu">R</span><span class="op">/</span> <span class="fu">man</span><span class="op">/</span> NAMESPACE</span></code></pre></div>
 <p>README、vignette、pkgdown のナビゲーションを変えた場合は、可能なら pkgdown サイトも ローカルでビルドします。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">build_site</a></span><span class="op">(</span>preview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p><code>docs/</code> が空ではなく、pkgdown が作ったサイトとして認識されないというエラーが出た場合は、 ローカル生成物を消してから作り直します。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/clean.html" class="external-link">clean_site</a></span><span class="op">(</span>force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">build_site</a></span><span class="op">(</span>preview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>このリポジトリでは <code>docs/</code> はローカル確認用で、<code>.gitignore</code> に入っています。公開サイトは GitHub Actions が <code>gh-pages</code> ブランチへ deploy するため、通常のドキュメント更新では ローカルの <code>docs/</code> を stage しません。</p>
 <p>Windows でローカル pkgdown build を行う場合、Pandoc と書き込み可能な R cache を 環境変数で指定する必要があることがあります。</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">RSTUDIO_PANDOC</span> <span class="op">=</span> <span class="st">"C:\Program Files\RStudio\resources\app\bin\quarto\bin\tools"</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">R_USER_CACHE_DIR</span> <span class="op">=</span> <span class="st">"C:\Users\Konrai\github\ylistjp\work\r-cache"</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">RSTUDIO_PANDOC</span> <span class="op">=</span> <span class="st">"C:\Program Files\RStudio\resources\app\bin\quarto\bin\tools"</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">R_USER_CACHE_DIR</span> <span class="op">=</span> <span class="st">"C:\Users\Konrai\github\ylistjp\work\r-cache"</span></span></code></pre></div>
 <p><code>realfavicongenerator.net</code>、<code>cloud.r-project.org</code>、Bioconductor への接続で ローカル build が失敗する場合は、ドキュメント原本の問題ではなく、ローカル環境または ネットワーク制限による失敗として扱います。その場合は roxygen と vignette の変更を push し、 ネットワークのある CI 環境で動く GitHub Actions の pkgdown workflow を確認します。</p>
 </section><section class="level2"><h2 id="テストと確認">テストと確認<a class="anchor" aria-label="anchor" href="#%E3%83%86%E3%82%B9%E3%83%88%E3%81%A8%E7%A2%BA%E8%AA%8D"></a>
 </h2>
 <p>単体テスト:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="op">-</span>e <span class="st">"testthat::test_local('.', reporter = 'summary')"</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="op">-</span>e <span class="st">"testthat::test_local('.', reporter = 'summary')"</span></span></code></pre></div>
 <p>パッケージ build/check:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">R</span> CMD build <span class="op">.</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">R</span> CMD check jpplantnames_0<span class="op">.</span><span class="dv">1.0</span><span class="op">.</span><span class="fu">tar</span><span class="op">.</span><span class="fu">gz</span> <span class="op">--</span>no-manual</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">R</span> CMD build <span class="op">.</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">R</span> CMD check jpplantnames_0<span class="op">.</span><span class="dv">1.0</span><span class="op">.</span><span class="fu">tar</span><span class="op">.</span><span class="fu">gz</span> <span class="op">--</span>no-manual</span></code></pre></div>
 <p>Windows で Pandoc が <code>PATH</code> にない場合は、vignettes や pkgdown の build 前に <code>RSTUDIO_PANDOC</code> をインストール済み Pandoc のディレクトリへ向けます。</p>
 <p>ドキュメントだけの変更でも、commit 前には最終的な対象ファイルを確認します。</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>git status <span class="op">--</span>short</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>git status <span class="op">--</span>short</span></code></pre></div>
 <p>commit するのは、編集した原本と roxygen 生成物です。たとえば <code>R/*.R</code>、 <code>man/*.Rd</code>、変更があれば <code>NAMESPACE</code> を含めます。通常の運用では、ローカルの pkgdown build でできた <code>docs/</code> は commit しません。</p>
 </section><section class="level2"><h2 id="変更前後のチェックリスト">変更前後のチェックリスト<a class="anchor" aria-label="anchor" href="#%E5%A4%89%E6%9B%B4%E5%89%8D%E5%BE%8C%E3%81%AE%E3%83%81%E3%82%A7%E3%83%83%E3%82%AF%E3%83%AA%E3%82%B9%E3%83%88"></a>
 </h2>

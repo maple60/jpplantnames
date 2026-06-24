@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Maintenance guide • jpplantnames</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -45,6 +50,7 @@
     <li><a class="dropdown-item" href="../articles/ja-package-development.html">日本語: パッケージ開発チュートリアル</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -207,6 +213,28 @@
 <li>required post-processing is added after reading the file.</li>
 </ul>
 <p>The checklist Excel file is read from the <code>JN_dataset</code> sheet. Keep structure tests in the synthetic fixture rather than downloading the full checklist file during unit tests.</p>
+</section><section class="level3"><h3 id="updating-the-jbif-checklist-version">Updating the JBIF checklist version<a class="anchor" aria-label="anchor" href="#updating-the-jbif-checklist-version"></a>
+</h3>
+<p>The package currently targets the Vascular Plant Japanese Name Checklist ver. 1.10. When JBIF publishes a new checklist version, keep the update small and auditable:</p>
+<ol type="1">
+<li>Confirm the new JBIF page, Excel URL, version label, and citation text.</li>
+<li>Download the old and new Excel files outside the package cache and compare sheet names plus the <code>JN_dataset</code> column names.</li>
+<li>Update <code>CHECKLIST_URL</code> and <code>CHECKLIST_CACHE_FILE</code> in <code>R/cache.R</code>.</li>
+<li>If sheet names or required columns changed, update <code>checklist_japanese_name_sheet</code>, <code>required_checklist_columns</code>, and <code>normalize_checklist_japanese_name_dataset()</code> in <code>R/load.R</code>.</li>
+<li>Update the synthetic Excel fixture in <code>tests/testthat/helper-fixture.R</code> so unit tests cover the new column structure without downloading the full file.</li>
+<li>Run <code><a href="https://testthat.r-lib.org/reference/test_package.html" class="external-link">testthat::test_local()</a></code> before broader package checks.</li>
+<li>Update version labels, source URLs, and citation text in <code>README.md</code>, <code>README.ja.md</code>, the usage guides, and this maintenance guide.</li>
+</ol>
+<p>For the column comparison, use <code>readxl</code> directly rather than inspecting the file manually:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">old</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_excel</a></span><span class="op">(</span><span class="st">"old-checklist.xlsx"</span>, sheet <span class="op">=</span> <span class="st">"JN_dataset"</span>,</span>
+<span>                          n_max <span class="op">=</span> <span class="fl">0</span>, .name_repair <span class="op">=</span> <span class="st">"minimal"</span><span class="op">)</span></span>
+<span><span class="va">new</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_excel</a></span><span class="op">(</span><span class="st">"new-checklist.xlsx"</span>, sheet <span class="op">=</span> <span class="st">"JN_dataset"</span>,</span>
+<span>                          n_max <span class="op">=</span> <span class="fl">0</span>, .name_repair <span class="op">=</span> <span class="st">"minimal"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">new</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">new</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
 </section><section class="level3"><h3 id="scientific_name">
 <code>scientific_name()</code><a class="anchor" aria-label="anchor" href="#scientific_name"></a>
 </h3>
@@ -325,37 +353,37 @@
 <li>Edit the roxygen comments in <code>R/*.R</code>.</li>
 <li>Regenerate reference files:</li>
 </ol>
-<div class="sourceCode" id="cb1"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="op">-</span>e <span class="st">"roxygen2::roxygenise()"</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="op">-</span>e <span class="st">"roxygen2::roxygenise()"</span></span></code></pre></div>
 <ol start="3" type="1">
 <li>Review the generated diff:</li>
 </ol>
-<div class="sourceCode" id="cb2"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>git <span class="fu">diff</span> <span class="op">--</span> <span class="fu">R</span><span class="op">/</span> <span class="fu">man</span><span class="op">/</span> NAMESPACE</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>git <span class="fu">diff</span> <span class="op">--</span> <span class="fu">R</span><span class="op">/</span> <span class="fu">man</span><span class="op">/</span> NAMESPACE</span></code></pre></div>
 <p>For README, vignette, or pkgdown navigation changes, also build the site locally when possible:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">build_site</a></span><span class="op">(</span>preview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>If pkgdown stops because <code>docs/</code> is non-empty and not recognized as a pkgdown site, remove the local generated site first:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/clean.html" class="external-link">clean_site</a></span><span class="op">(</span>force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">build_site</a></span><span class="op">(</span>preview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>In this repository, <code>docs/</code> is ignored locally. GitHub Actions deploys the published pkgdown site to the <code>gh-pages</code> branch, so do not stage local <code>docs/</code> files for ordinary documentation updates.</p>
 <p>On Windows, local pkgdown builds may also need environment variables for Pandoc and a writable R cache:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">RSTUDIO_PANDOC</span> <span class="op">=</span> <span class="st">"C:\Program Files\RStudio\resources\app\bin\quarto\bin\tools"</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">R_USER_CACHE_DIR</span> <span class="op">=</span> <span class="st">"C:\Users\Konrai\github\ylistjp\work\r-cache"</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">RSTUDIO_PANDOC</span> <span class="op">=</span> <span class="st">"C:\Program Files\RStudio\resources\app\bin\quarto\bin\tools"</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">R_USER_CACHE_DIR</span> <span class="op">=</span> <span class="st">"C:\Users\Konrai\github\ylistjp\work\r-cache"</span></span></code></pre></div>
 <p>If the local build fails while contacting <code>realfavicongenerator.net</code>, <code>cloud.r-project.org</code>, or Bioconductor, treat that as an environment or network failure rather than a documentation-source failure. Push the roxygen and vignette changes and verify the GitHub Actions pkgdown workflow, which runs in a networked CI environment.</p>
 </section><section class="level2"><h2 id="tests-and-checks">Tests and Checks<a class="anchor" aria-label="anchor" href="#tests-and-checks"></a>
 </h2>
 <p>Run unit tests:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="op">-</span>e <span class="st">"testthat::test_local('.', reporter = 'summary')"</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="op">-</span>e <span class="st">"testthat::test_local('.', reporter = 'summary')"</span></span></code></pre></div>
 <p>Build and check the package:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">R</span> CMD build <span class="op">.</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">R</span> CMD check jpplantnames_0<span class="op">.</span><span class="dv">1.0</span><span class="op">.</span><span class="fu">tar</span><span class="op">.</span><span class="fu">gz</span> <span class="op">--</span>no-manual</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">R</span> CMD build <span class="op">.</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">R</span> CMD check jpplantnames_0<span class="op">.</span><span class="dv">1.0</span><span class="op">.</span><span class="fu">tar</span><span class="op">.</span><span class="fu">gz</span> <span class="op">--</span>no-manual</span></code></pre></div>
 <p>On Windows, if Pandoc is not on <code>PATH</code>, set <code>RSTUDIO_PANDOC</code> to an installed Pandoc directory before building vignettes or pkgdown.</p>
 <p>Before committing a documentation-only change, check the final file set:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>git status <span class="op">--</span>short</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>git status <span class="op">--</span>short</span></code></pre></div>
 <p>Commit the edited sources and generated roxygen outputs, such as <code>R/*.R</code>, <code>man/*.Rd</code>, and <code>NAMESPACE</code> when it changes. Do not commit <code>docs/</code> from a local pkgdown build in the usual workflow.</p>
 </section><section class="level2"><h2 id="release-checklist">Release Checklist<a class="anchor" aria-label="anchor" href="#release-checklist"></a>
 </h2>
